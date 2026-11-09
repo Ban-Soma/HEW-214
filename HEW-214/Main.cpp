@@ -8,6 +8,8 @@
 #include "Defines.h"
 #include "ShaderList.h"
 
+// test
+
 //--- ƒOƒ[ƒoƒ‹•Ï”
 Scene* g_pScene;
 
