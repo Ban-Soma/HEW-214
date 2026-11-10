@@ -377,3 +377,26 @@ FodyWeavers.xsd
 
 !HEW-214/DirectXTex/Win32/Release/
 !HEW-214/DirectXTex/Win32/Release/DirectXTex.lib
+
+# Visual Studio Build Files
+[Dd]ebug/
+x64/
+[Ww]in32/
+*.exe
+*.tlog
+*.idb
+*.lastbuildstate
+*.recipe
+
+# Keep DirectXTex libraries
+!HEW-214/DirectXTex/
+!HEW-214/DirectXTex/x64/
+!HEW-214/DirectXTex/x64/Debug/
+!HEW-214/DirectXTex/x64/Debug/DirectXTex.lib
+!HEW-214/DirectXTex/x64/Release/
+!HEW-214/DirectXTex/x64/Release/DirectXTex.lib
+!HEW-214/DirectXTex/Win32/
+!HEW-214/DirectXTex/Win32/Debug/
+!HEW-214/DirectXTex/Win32/Debug/DirectXTex.lib
+!HEW-214/DirectXTex/Win32/Release/
+!HEW-214/DirectXTex/Win32/Release/DirectXTex.lib
