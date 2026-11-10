@@ -64,3 +64,8 @@ DirectX::XMFLOAT3 Camera::GetLook()
 {
 	return m_look;
 }
+
+void Camera::SetLook(DirectX::XMFLOAT3 SetLook)
+{
+	m_look = SetLook;
+}

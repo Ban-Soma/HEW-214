@@ -27,4 +27,7 @@ public:
 	//注視点の取得
 	DirectX::XMFLOAT3 GetLook();
 
+	//注視点のセット
+	void SetLook(DirectX::XMFLOAT3);
+
 };

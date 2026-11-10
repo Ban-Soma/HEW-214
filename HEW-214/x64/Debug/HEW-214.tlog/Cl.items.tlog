@@ -1,6 +1,7 @@
 C:\Users\keito\GitHub\HEW-214\HEW-214\Camera.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\Camera.obj
 C:\Users\keito\GitHub\HEW-214\HEW-214\CameraDebug.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\CameraDebug.obj
 C:\Users\keito\GitHub\HEW-214\HEW-214\DirectX.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\DirectX.obj
+C:\Users\keito\GitHub\HEW-214\HEW-214\Enemy.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\Enemy.obj
 C:\Users\keito\GitHub\HEW-214\HEW-214\Geometory.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\Geometory.obj
 C:\Users\keito\GitHub\HEW-214\HEW-214\Goal.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\Goal.obj
 C:\Users\keito\GitHub\HEW-214\HEW-214\Ground.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\Ground.obj
@@ -8,6 +9,7 @@ C:\Users\keito\GitHub\HEW-214\HEW-214\Input.cpp;C:\Users\keito\GitHub\HEW-214\HE
 C:\Users\keito\GitHub\HEW-214\HEW-214\Main.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\Main.obj
 C:\Users\keito\GitHub\HEW-214\HEW-214\MeshBuffer.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\MeshBuffer.obj
 C:\Users\keito\GitHub\HEW-214\HEW-214\Model.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\Model.obj
+C:\Users\keito\GitHub\HEW-214\HEW-214\Player.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\Player.obj
 C:\Users\keito\GitHub\HEW-214\HEW-214\Scene.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\Scene.obj
 C:\Users\keito\GitHub\HEW-214\HEW-214\SceneGame.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\SceneGame.obj
 C:\Users\keito\GitHub\HEW-214\HEW-214\Shader.cpp;C:\Users\keito\GitHub\HEW-214\HEW-214\x64\Debug\Shader.obj

@@ -20,7 +20,7 @@ static const float fFPS = static_cast<float>(FPS);
 static const float GRAVITY = 0.98f;
 
 // タイトル
-static const char* APP_TITLE = "はろーー";
+static const char* APP_TITLE = "びりびり電気くん";
 
 // 画面サイズ
 static const int SCREEN_WIDTH	= 1280;
@@ -31,5 +31,7 @@ static const int	DEBUG_GRID_NUM		= 10;			// グリッド中心から端までの線の本数
 static const float	DEBUG_GRID_MARGIN	= METER(1.0f);	// グリッド配置幅
 
 #define SAFE_DELETE(p) {if(p){delete (p);(p) = nullptr;}}//メモリの開放
+
+#define MAX_ENEMY (250) //最大敵数
 
 #endif // __DEFINES_H__

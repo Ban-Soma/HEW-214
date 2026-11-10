@@ -2,17 +2,24 @@
 #include "Defines.h"
 #include "Geometory.h"
 #include "CameraDebug.h"
-#include "Shaderlist.h"
+#include "Enemy.h"
+#include "time.h"
+#include "DirectXMath.h"
 
 SceneGame::SceneGame()
 	:m_pGround(nullptr)
 	,m_pGoal(nullptr)
 	,m_pCamera(nullptr)
 	,m_pModel(nullptr)
+	,m_pPlayer(nullptr)
+	, m_pEnemy{}
 {
+	// 乱数の初期化
+	srand((unsigned int)time(NULL));
+
 	m_pGround = new Ground();
 	m_pGround->SetPos(0.0f, 0.0f, 0.0f);
-	m_pGround->SetScale(3.0f, 0.4f, 3.0f);
+	m_pGround->SetScale(3.0f, 0.2f, 3.0f);
 	
 	m_pGoal = new Goal();
 	m_pGoal->SetPos(0.0f, 1.0f, 0.0f);
@@ -21,25 +28,96 @@ SceneGame::SceneGame()
 	m_pCamera = new CameraDebug();
 
 	m_pModel = new Model();
-	if (!m_pModel->Load("Assets/Model/tree_forest.fbx",0.5f))
+	if (!m_pModel->Load("Assets/Model/robot.fbx",0.5f, Model::Flip::XFlip))
 	{
 		MessageBox(NULL, "モデルの読み込みに失敗しました", "Model Error", MB_OK);
+	}
+
+	m_pPlayer = new Player();
+	m_pPlayer->SetPos(0.0f, 0.2f, 0.0f);
+	m_pPlayer->SetScale(0.2f, 0.2f, 0.2f);
+
+
+	//Enemyをランダムな位置に生成
+	for (int i = 0; i < MAX_ENEMY; i++) {
+
+		float EnemyPosX ;
+		float EnemyPosZ ; 
+		bool HitOverlap ;
+
+		const float MinDistance = 0.5f;//0.5fの距離を開けての生成
+
+		m_pEnemy[i] = new Enemy();
+
+		do {
+			HitOverlap = false;
+
+			 EnemyPosX = (float)(rand() % 200) / 10.0f - 10.0f;
+			 EnemyPosZ = (float)(rand() % 200) / 10.0f - 10.0f;
+
+			//敵同士が重ならないように
+			for (int j = 0; j < i ; ++j) {
+				DirectX::XMFLOAT3 OtherPos = m_pEnemy[j]->GetEnemyPos();
+
+				float DistanceX = EnemyPosX - OtherPos.x;
+				float DistanceZ = EnemyPosZ - OtherPos.z;
+				float DistanceSquared = DistanceX * DistanceX + DistanceZ * DistanceZ;
+
+				if (DistanceSquared < MinDistance * MinDistance)
+				{
+					HitOverlap = true;
+					break;
+				}
+			}
+		} while (HitOverlap);
+
+		//座標の設定
+		m_pEnemy[i]->SetEnemyPos(EnemyPosX, 0.2f, EnemyPosZ);
+		///大きさの設定
+		m_pEnemy[i]->SetEnemyScale(0.2f, 0.2f, 0.2f);
+		//敵の情報を保持
+		m_pEnemy[i]->SetEnemyList(m_pEnemy, MAX_ENEMY);
 	}
 }
 
 SceneGame::~SceneGame()
 {
+	for (int i = 0; i < MAX_ENEMY; i++) {
+		SAFE_DELETE(m_pEnemy[i]);
+	}
+	
+	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pGoal);
 	SAFE_DELETE(m_pGround);
+
 }
 
 void SceneGame::Update()
 {
 	m_pGoal->Update();
 	m_pGround->Update();
+	//プレイヤーを先に動かす
+	m_pPlayer->Update();
+	//動いた後のプレイヤーの位置をカメラの注視点に設定
+	m_pCamera->SetLook(m_pPlayer->GetPos());
+	//新しい注視点を使ってカメラの位置を計算
 	m_pCamera->Update();
+	
+	for (int i = 0; i < MAX_ENEMY; i++)
+	{
+		if (m_pEnemy[i] == nullptr) {
+			continue;
+		}
+		//追従するプレイヤーの座標を取得
+		m_pEnemy[i]->SetPlayerPos(m_pPlayer);
+		m_pEnemy[i]->Update();
+	
+	}
+
+	m_pCamera->SetLook(m_pPlayer->GetPos());
+	
 }
 
 void SceneGame::Draw()
@@ -55,51 +133,22 @@ void SceneGame::Draw()
 
 	m_pGround->Draw();
 	m_pGoal->Draw();
+	m_pPlayer->Draw();
 
-	if (m_pModel)
-	{
-		//モデルを表示するためのワールド座標を計算
-		DirectX::XMFLOAT4X4 fWorld;
-		DirectX::XMMATRIX world;
-		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(0.0f, 0.2f, 0.0f);
-		DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(0.0f);
-		DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(0.0f);
-		DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(0.0f);
-		DirectX::XMMATRIX R = Rx * Ry * Rz;//回転行列のみを掛け合わせて格納
-		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
-		world = S * R * T;
-		world = DirectX::XMMatrixTranspose(world);
-		DirectX::XMStoreFloat4x4(&fWorld, world);
-
-		//シェーダーに必要なデータを設定
-		ShaderList::SetWorld(fWorld);
-		ShaderList::SetView(m_pCamera->GetViewMatrix());
-		ShaderList::SetProjection(m_pCamera->GetProjectionMatrix());
-
-		//モデルに使用する各種シェーダーの設定
-		m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-		m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
-
-		//メッシュ別にモデルを表示
-		for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+	const DirectX::XMFLOAT3 playerPos = m_pPlayer->GetPos();
+	const float rangeX = 10.0f;
+	const float rangeZ = 10.0f;
+	for (int i = 0; i < MAX_ENEMY; i++) {
+		if (m_pEnemy[i] == nullptr)
 		{
-			//モデルのメッシュを取得
-			const Model::Mesh* mesh = m_pModel->GetMesh(i);
-			//メッシュに割り当てられるマテリアルを取得
-			Model::Material material = *m_pModel->GetMaterial(mesh->materialID);
-
-			material.ambient.x = 0.7f;
-			material.ambient.y = 0.7f;
-			material.ambient.z = 0.7f;
-			material.ambient.w = 1.0f;
-
-			//シェーダーにマテリアルを設定
-			ShaderList::SetMaterial(material);
-			//モデルの描画(内部的に一括で行っていた描画処理を、メッシュごとの描画処理に変更)
-			m_pModel->Draw(i);
-
-			//深度テストの有効化
-			SetDepthTest(DEPTH_ENABLE);
+			continue;
 		}
+		m_pEnemy[i]->Draw();
 	}
+	
+
+	/*if (m_pModel)
+	{
+		m_pModel->Draw();
+	}*/
 }
