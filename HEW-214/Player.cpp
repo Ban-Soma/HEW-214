@@ -18,10 +18,11 @@ Player::~Player()
 
 void Player::Update()
 {
-	if (IsKeyPress('W')) { m_pos.z += 0.04f; }
-	if (IsKeyPress('S')) { m_pos.z -= 0.04f; }
-	if (IsKeyPress('A')) { m_pos.x -= 0.04f; }
-	if (IsKeyPress('D')) { m_pos.x += 0.04f; }
+	float MoveSpeed = 0.70f;
+		if (IsKeyPress('W')) { m_pos.z += MoveSpeed; }
+	if (IsKeyPress('S')) { m_pos.z -= MoveSpeed; }
+	if (IsKeyPress('A')) { m_pos.x -= MoveSpeed; }
+	if (IsKeyPress('D')) { m_pos.x += MoveSpeed; }
 }
 
 void Player::Draw()
