@@ -1,6 +1,9 @@
 #pragma once
 #include <DirectXMath.h>
 
+class Enemy;
+
+
 class Player {
 private:
 	DirectX::XMFLOAT3 m_pos;//座標
@@ -22,5 +25,5 @@ public:
 	DirectX::XMFLOAT3 GetScale();
 
 	//プレイヤーと敵が重なった時の処理
-	//int HitPlayer(Enemy** Enemys, int count);
+	int HitPlayer(Enemy** Enemys, int count);
 };

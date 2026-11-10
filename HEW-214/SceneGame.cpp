@@ -2,7 +2,7 @@
 #include "Defines.h"
 #include "Geometory.h"
 #include "CameraDebug.h"
-#include "Enemy.h"
+#include "EnemyManager.h"
 #include "time.h"
 #include "DirectXMath.h"
 
@@ -12,7 +12,7 @@ SceneGame::SceneGame()
 	,m_pCamera(nullptr)
 	,m_pModel(nullptr)
 	,m_pPlayer(nullptr)
-	, m_pEnemy{}
+	, m_pEnemyManager(nullptr)
 {
 	// 乱数の初期化
 	srand((unsigned int)time(NULL));
@@ -37,6 +37,9 @@ SceneGame::SceneGame()
 	m_pPlayer->SetPos(0.0f, 0.2f, 0.0f);
 	m_pPlayer->SetScale(0.2f, 0.2f, 0.2f);
 
+	m_pEnemyManager = new EnemyManager();
+	m_pEnemyManager->InitEnemyManager(m_pPlayer);
+
 
 	//Enemyをランダムな位置に生成
 	for (int i = 0; i < MAX_ENEMY; i++) {
@@ -47,45 +50,35 @@ SceneGame::SceneGame()
 
 		const float MinDistance = 0.5f;//0.5fの距離を開けての生成
 
-		m_pEnemy[i] = new Enemy();
+		//do {
+		//	HitOverlap = false;
 
-		do {
-			HitOverlap = false;
+		//	 EnemyPosX = (float)(rand() % 200) / 10.0f - 10.0f;
+		//	 EnemyPosZ = (float)(rand() % 200) / 10.0f - 10.0f;
 
-			 EnemyPosX = (float)(rand() % 200) / 10.0f - 10.0f;
-			 EnemyPosZ = (float)(rand() % 200) / 10.0f - 10.0f;
+		//	//敵同士が重ならないように
+		//	for (int j = 0; j < i ; ++j) {
+		//		DirectX::XMFLOAT3 OtherPos = m_pEnemy[j]->GetEnemyPos();
 
-			//敵同士が重ならないように
-			for (int j = 0; j < i ; ++j) {
-				DirectX::XMFLOAT3 OtherPos = m_pEnemy[j]->GetEnemyPos();
+		//		float DistanceX = EnemyPosX - OtherPos.x;
+		//		float DistanceZ = EnemyPosZ - OtherPos.z;
+		//		float DistanceSquared = DistanceX * DistanceX + DistanceZ * DistanceZ;
 
-				float DistanceX = EnemyPosX - OtherPos.x;
-				float DistanceZ = EnemyPosZ - OtherPos.z;
-				float DistanceSquared = DistanceX * DistanceX + DistanceZ * DistanceZ;
+		//		if (DistanceSquared < MinDistance * MinDistance)
+		//		{
+		//			HitOverlap = true;
+		//			break;
+		//		}
+		//	}
+		//} while (HitOverlap);
 
-				if (DistanceSquared < MinDistance * MinDistance)
-				{
-					HitOverlap = true;
-					break;
-				}
-			}
-		} while (HitOverlap);
-
-		//座標の設定
-		m_pEnemy[i]->SetEnemyPos(EnemyPosX, 0.2f, EnemyPosZ);
-		///大きさの設定
-		m_pEnemy[i]->SetEnemyScale(0.2f, 0.2f, 0.2f);
-		//敵の情報を保持
-		m_pEnemy[i]->SetEnemyList(m_pEnemy, MAX_ENEMY);
+		
 	}
 }
 
 SceneGame::~SceneGame()
 {
-	for (int i = 0; i < MAX_ENEMY; i++) {
-		SAFE_DELETE(m_pEnemy[i]);
-	}
-	
+	SAFE_DELETE(m_pEnemyManager);
 	SAFE_DELETE(m_pPlayer);
 	SAFE_DELETE(m_pModel);
 	SAFE_DELETE(m_pCamera);
@@ -105,7 +98,7 @@ void SceneGame::Update()
 	//新しい注視点を使ってカメラの位置を計算
 	m_pCamera->Update();
 	
-	for (int i = 0; i < MAX_ENEMY; i++)
+	/*r(int i = 0; i < MAX_ENEMY; i++)
 	{
 		if (m_pEnemy[i] == nullptr) {
 			continue;
@@ -114,8 +107,9 @@ void SceneGame::Update()
 		m_pEnemy[i]->SetPlayerPos(m_pPlayer);
 		m_pEnemy[i]->Update();
 	
-	}
+	}*/
 
+	m_pEnemyManager->UpdateEnemyManager();
 	m_pCamera->SetLook(m_pPlayer->GetPos());
 	
 }
@@ -133,18 +127,8 @@ void SceneGame::Draw()
 
 	m_pGround->Draw();
 	m_pGoal->Draw();
-	m_pPlayer->Draw();
-
-	const DirectX::XMFLOAT3 playerPos = m_pPlayer->GetPos();
-	const float rangeX = 10.0f;
-	const float rangeZ = 10.0f;
-	for (int i = 0; i < MAX_ENEMY; i++) {
-		if (m_pEnemy[i] == nullptr)
-		{
-			continue;
-		}
-		m_pEnemy[i]->Draw();
-	}
+	m_pPlayer->Draw();	
+	m_pEnemyManager->DrawEnemyManager();
 	
 
 	/*if (m_pModel)

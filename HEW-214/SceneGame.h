@@ -7,7 +7,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "Player.h"
-#include "Enemy.h"
+#include "EnemyManager.h"
 #include "Defines.h"
 class SceneGame : public Scene
 {
@@ -25,7 +25,7 @@ private:
 	Model* m_pModel;
 
 	Player* m_pPlayer;
-	Enemy*  m_pEnemy[MAX_ENEMY];
+	EnemyManager* m_pEnemyManager;
 };
 
 #endif // __SCENE_GAME_H__

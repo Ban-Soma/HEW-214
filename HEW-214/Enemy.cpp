@@ -107,7 +107,7 @@ void Enemy::FollowingEnemy()
 	DirectX::XMFLOAT3 nextPos = m_pos;
 
 	//‹——£‚ªˆê’èˆÈ‰º‚È‚çƒvƒŒƒCƒ„[‚É‹ß‚Ã‚­
-	if (g_distance <= 2.0f && g_distance > 0.3)
+	if (g_distance <= 2.0f && g_distance > 0.3f)
 	{
 		//³‹K‰»‚µ‚ÄˆÚ“®—Ê‚ğŒvZ
 		g_direction = DirectX::XMVector3Normalize(g_direction);
@@ -121,6 +121,9 @@ void Enemy::FollowingEnemy()
 	//’Ç]’†‚Ì“G“¯m‚ªd‚È‚ç‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß‚Ìˆ— 
 	if (m_pEnemy != nullptr) {
 		for (int i = 0; i < m_EnemyCount; i++) {
+
+			// “G‚ª‘¶İ‚µ‚È‚¯‚ê‚ÎŸ‚Ì“G‚Ö
+			if (m_pEnemy[i] == nullptr) continue;
 			//©•ª©g‚Æ“™‚µ‚¯‚ê‚Îcontinue
 			if (m_pEnemy[i] == this) continue;
 			DirectX::XMFLOAT3 otherPos = m_pEnemy[i]->GetEnemyPos();

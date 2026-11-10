@@ -32,6 +32,6 @@ static const float	DEBUG_GRID_MARGIN	= METER(1.0f);	// グリッド配置幅
 
 #define SAFE_DELETE(p) {if(p){delete (p);(p) = nullptr;}}//メモリの開放
 
-#define MAX_ENEMY (250) //最大敵数
+#define MAX_ENEMY (67) //最大敵数
 
 #endif // __DEFINES_H__

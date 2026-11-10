@@ -18,8 +18,8 @@ Player::~Player()
 
 void Player::Update()
 {
-	float MoveSpeed = 0.70f;
-		if (IsKeyPress('W')) { m_pos.z += MoveSpeed; }
+	float MoveSpeed = 0.50f;
+	if (IsKeyPress('W')) { m_pos.z += MoveSpeed; }
 	if (IsKeyPress('S')) { m_pos.z -= MoveSpeed; }
 	if (IsKeyPress('A')) { m_pos.x -= MoveSpeed; }
 	if (IsKeyPress('D')) { m_pos.x += MoveSpeed; }
@@ -67,33 +67,35 @@ DirectX::XMFLOAT3 Player::GetScale()
 	return m_scale;
 }
 
-//int Player::HitPlayer(Enemy** Enemys, int count)
-//{
-//	DirectX::XMFLOAT3 PlayerPos = GetPos();
-//	DirectX::XMFLOAT3 PlayerScale = GetScale();
-//	
-//		for (int i = 0; i < count; i++) {
-//			if (&Enemys[i] == nullptr) {
-//				continue;
-//			}
-//
-//			DirectX::XMFLOAT3 EnemyPos = Enemys[i]->GetEnemyPos();
-//			DirectX::XMFLOAT3 EnemyScale= Enemys[i]->GetEnemyScale();
-//
-//			//“G‚ÆƒvƒŒƒCƒ„[‚Æ‚Ì‹——£ŒvZ
-//			float DistanceX = PlayerPos.x - EnemyPos.x;
-//			float DistanceZ = PlayerPos.z - EnemyPos.z;
-//
-//			//•‚ğ”¼•ª‚¸‚Â‘«‚µ‚½‹——£‚ğÚG‚Ì‹«ŠE‚É‚·‚éˆ—
-//			float limitX = (PlayerScale.x + EnemyScale.x) * 0.5;
-//			float limitZ = (PlayerScale.z + EnemyScale.z) * 0.5;
-//
-//			if (DistanceX * DistanceX + DistanceZ * DistanceZ < limitX * limitX + limitZ * limitZ) {
-//				return i;
-//			}
-//		}
-//	
-//	//ÅŒã‚Ü‚ÅŒ©‚Â‚©‚ç‚È‚©‚Á‚½‚ç-1
-//	return -1;
-//}
-//
+int Player::HitPlayer(Enemy** Enemys, int count)
+{
+	DirectX::XMFLOAT3 PlayerPos = GetPos();
+	DirectX::XMFLOAT3 PlayerScale = GetScale();
+	
+		for (int i = 0; i < count; i++) {
+        // ŠÖ”éŒ¾‚àƒXƒyƒ‹C³
+        int HitPlayer(Enemy** Enemies, int count);
+			if (&Enemys[i] == nullptr) {
+				continue;
+			}
+
+			DirectX::XMFLOAT3 EnemyPos = Enemys[i]->GetEnemyPos();
+			DirectX::XMFLOAT3 EnemyScale= Enemys[i]->GetEnemyScale();
+
+			//“G‚ÆƒvƒŒƒCƒ„[‚Æ‚Ì‹——£ŒvZ
+			float DistanceX = PlayerPos.x - EnemyPos.x;
+			float DistanceZ = PlayerPos.z - EnemyPos.z;
+
+			//•‚ğ”¼•ª‚¸‚Â‘«‚µ‚½‹——£‚ğÚG‚Ì‹«ŠE‚É‚·‚éˆ—
+			float limitX = (PlayerScale.x + EnemyScale.x) * 0.5;
+			float limitZ = (PlayerScale.z + EnemyScale.z) * 0.5;
+
+			if (DistanceX * DistanceX + DistanceZ * DistanceZ < limitX * limitX + limitZ * limitZ) {
+				return i;
+			}
+		}
+	
+	//ÅŒã‚Ü‚ÅŒ©‚Â‚©‚ç‚È‚©‚Á‚½‚ç-1
+	return -1;
+}
+
