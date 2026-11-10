@@ -25,6 +25,7 @@ void CameraDebug::Update()
 	if (IsKeyPress('D')) { m_radXZ -= speed; }
 	if (IsKeyPress('W')) { m_radY += speed; }
 	if (IsKeyPress('S')) { m_radY -= speed; }
+	
 
 	//ƒJƒƒ‰‚Ì‹——£‚ğ‘Ö‚¦‚éˆ—
 	if (IsKeyPress('Q')) { m_radius += speed; }
