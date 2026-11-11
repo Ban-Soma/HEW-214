@@ -4,6 +4,9 @@
 #include "SceneGame.h"
 #include "Input.h"
 #include <Xinput.h>
+#include <cmath>
+#include<algorithm>
+
 #pragma comment(lib, "Xinput.lib")
 
 
@@ -28,20 +31,60 @@ void Player::Update()
 	if (IsKeyPress('D')) { m_pos.x += MoveSpeed; }
 
 	// Xboxコントローラー
+	// コントローラーの入力情報を格納する構造体
 	XINPUT_STATE state = {};
+
+	// 現在RTボタンが押されているか
+	bool nowRT = false;
 
 	if (XInputGetState(0, &state) == ERROR_SUCCESS)
 	{
+		// 左スティック
 		float x = state.Gamepad.sThumbLX / 32768.0f;
-		float y = state.Gamepad.sThumbLY / 32768.0f;
+		float z = state.Gamepad.sThumbLY / 32768.0f;
 
 		// デッドゾーン
-		if (abs(x) < 0.2f) x = 0.0f;
-		if (abs(y) < 0.2f) y = 0.0f;
+		float length = sqrtf(x * x + z * z);
 
-		// 移動
-		m_pos.x += x * MoveSpeed;
-		m_pos.z += y * MoveSpeed;
+		if (length < 0.2f) { x = 0.0f; z = 0.0f; }
+		else               { x /= length; z /= length; } // 方向性の正規化
+
+		// RT入力
+		nowRT = state.Gamepad.bRightTrigger > 30;
+
+		// RT押した瞬間にダッシュ開始
+		if (nowRT && !m_prevRT && !m_isDashing)
+		{
+			if(length >= 0.2f)
+			{
+				m_isDashing = true;
+
+				m_dashDirX = x;
+				m_dashDirZ = z;
+
+				m_dashRemaining = m_dashDistance;
+			}
+		}
+	}
+
+	m_prevRT = nowRT;
+
+	// ダッシュ中
+	if (m_isDashing)
+	{
+		float move = std::min(m_dashSpeed, m_dashRemaining);
+
+		m_pos.x += m_dashDirX * move;
+		m_pos.z += m_dashDirZ * move;
+
+		m_dashRemaining -= move;
+
+		// ダッシュ終了
+		if (m_dashRemaining <= 0.0f)
+		{
+			m_dashRemaining = 0.0f;
+			m_isDashing = false;
+		}
 	}
 }
 
