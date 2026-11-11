@@ -3,6 +3,9 @@
 #include "Geometory.h"
 #include "SceneGame.h"
 #include "Input.h"
+#include <Xinput.h>
+#pragma comment(lib, "Xinput.lib")
+
 
 Player::Player()
 	: m_pos{ 0.0f,0.0f,0.0f }
@@ -23,6 +26,23 @@ void Player::Update()
 	if (IsKeyPress('S')) { m_pos.z -= MoveSpeed; }
 	if (IsKeyPress('A')) { m_pos.x -= MoveSpeed; }
 	if (IsKeyPress('D')) { m_pos.x += MoveSpeed; }
+
+	// Xboxコントローラー
+	XINPUT_STATE state = {};
+
+	if (XInputGetState(0, &state) == ERROR_SUCCESS)
+	{
+		float x = state.Gamepad.sThumbLX / 32768.0f;
+		float y = state.Gamepad.sThumbLY / 32768.0f;
+
+		// デッドゾーン
+		if (abs(x) < 0.2f) x = 0.0f;
+		if (abs(y) < 0.2f) y = 0.0f;
+
+		// 移動
+		m_pos.x += x * MoveSpeed;
+		m_pos.z += y * MoveSpeed;
+	}
 }
 
 void Player::Draw()
