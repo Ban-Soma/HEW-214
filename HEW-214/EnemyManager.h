@@ -37,10 +37,6 @@ private:
 	// 敵の生成
 	void CreateEnemy(int slot, int spawnIndex);
 
-	//敵同士が重ならないようにする処理
-
-
-
 public:
 	//コンストラクタ
 	EnemyManager();

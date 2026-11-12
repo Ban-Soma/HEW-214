@@ -39,41 +39,6 @@ SceneGame::SceneGame()
 
 	m_pEnemyManager = new EnemyManager();
 	m_pEnemyManager->InitEnemyManager(m_pPlayer);
-
-
-	//Enemyをランダムな位置に生成
-	for (int i = 0; i < MAX_ENEMY; i++) {
-
-		float EnemyPosX ;
-		float EnemyPosZ ; 
-		bool HitOverlap ;
-
-		const float MinDistance = 0.5f;//0.5fの距離を開けての生成
-
-		//do {
-		//	HitOverlap = false;
-
-		//	 EnemyPosX = (float)(rand() % 200) / 10.0f - 10.0f;
-		//	 EnemyPosZ = (float)(rand() % 200) / 10.0f - 10.0f;
-
-		//	//敵同士が重ならないように
-		//	for (int j = 0; j < i ; ++j) {
-		//		DirectX::XMFLOAT3 OtherPos = m_pEnemy[j]->GetEnemyPos();
-
-		//		float DistanceX = EnemyPosX - OtherPos.x;
-		//		float DistanceZ = EnemyPosZ - OtherPos.z;
-		//		float DistanceSquared = DistanceX * DistanceX + DistanceZ * DistanceZ;
-
-		//		if (DistanceSquared < MinDistance * MinDistance)
-		//		{
-		//			HitOverlap = true;
-		//			break;
-		//		}
-		//	}
-		//} while (HitOverlap);
-
-		
-	}
 }
 
 SceneGame::~SceneGame()
