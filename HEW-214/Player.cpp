@@ -3,6 +3,8 @@
 #include "Geometory.h"
 #include "SceneGame.h"
 #include "Input.h"
+#include "EnemyManager.h"
+#include "CollisionManager.h"
 #include <Xinput.h>
 #include <cmath>
 #include<algorithm>
@@ -24,7 +26,7 @@ Player::~Player()
 
 void Player::Update()
 {
-	float MoveSpeed = 0.50f;
+	float MoveSpeed = 0.05f;
 	if (IsKeyPress('W')) { m_pos.z += MoveSpeed; }
 	if (IsKeyPress('S')) { m_pos.z -= MoveSpeed; }
 	if (IsKeyPress('A')) { m_pos.x -= MoveSpeed; }
@@ -86,6 +88,8 @@ void Player::Update()
 			m_isDashing = false;
 		}
 	}
+	
+
 }
 
 void Player::Draw()
@@ -130,17 +134,14 @@ DirectX::XMFLOAT3 Player::GetScale()
 	return m_scale;
 }
 
-int Player::HitPlayer(Enemy** Enemys, int count)
+int Player::HitPlayer(Enemy** Enemys)
 {
 	DirectX::XMFLOAT3 PlayerPos = GetPos();
 	DirectX::XMFLOAT3 PlayerScale = GetScale();
 	
-		for (int i = 0; i < count; i++) {
+		for (int i = 0; i < MAX_ENEMY; i++) {
         // ŠÖ”éŒ¾‚àƒXƒyƒ‹C³
-        int HitPlayer(Enemy** Enemies, int count);
-			if (&Enemys[i] == nullptr) {
-				continue;
-			}
+			if (&Enemys[i] == nullptr) { continue; }
 
 			DirectX::XMFLOAT3 EnemyPos = Enemys[i]->GetEnemyPos();
 			DirectX::XMFLOAT3 EnemyScale= Enemys[i]->GetEnemyScale();

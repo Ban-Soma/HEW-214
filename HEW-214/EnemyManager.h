@@ -39,8 +39,7 @@ private:
 
 	//敵同士が重ならないようにする処理
 
-
-
+	
 public:
 	//コンストラクタ
 	EnemyManager();
@@ -62,7 +61,11 @@ public:
 	//敵の数と配置の管理
 	//Population...個体数、個体群など文脈によってことなる
 	void UpdateEnemyPopulation();
+	//敵配列の取得
+	Enemy* const* GetEnemies() const;
 
-	
+	//死亡した敵の処理
+	void DeadEnemy();
+
 
 };

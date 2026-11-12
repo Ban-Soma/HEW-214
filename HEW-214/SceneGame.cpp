@@ -3,8 +3,10 @@
 #include "Geometory.h"
 #include "CameraDebug.h"
 #include "EnemyManager.h"
+#include "CombatSystem.h"
 #include "time.h"
 #include "DirectXMath.h"
+#include "CollisionManager.h"
 
 SceneGame::SceneGame()
 	:m_pGround(nullptr)
@@ -12,7 +14,7 @@ SceneGame::SceneGame()
 	,m_pCamera(nullptr)
 	,m_pModel(nullptr)
 	,m_pPlayer(nullptr)
-	, m_pEnemyManager(nullptr)
+	,m_pEnemyManager(nullptr)
 {
 	// 乱数の初期化
 	srand((unsigned int)time(NULL));
@@ -93,6 +95,8 @@ void SceneGame::Update()
 	m_pGround->Update();
 	//プレイヤーを先に動かす
 	m_pPlayer->Update();
+	
+	
 	//動いた後のプレイヤーの位置をカメラの注視点に設定
 	m_pCamera->SetLook(m_pPlayer->GetPos());
 	//新しい注視点を使ってカメラの位置を計算
@@ -110,6 +114,9 @@ void SceneGame::Update()
 	}*/
 
 	m_pEnemyManager->UpdateEnemyManager();
+	//当たり判定,コンボなどの更新
+	m_combatSystem->Update(*m_pPlayer, *m_pEnemyManager);
+	m_pEnemyManager->DeadEnemy();
 	m_pCamera->SetLook(m_pPlayer->GetPos());
 	
 }

@@ -6,7 +6,9 @@
  extern Player* g_player = new Player;
 
 
-EnemyManager::EnemyManager()
+ 
+
+ EnemyManager::EnemyManager()
     :m_pEnemy{nullptr}
     ,m_activeSpawnIndex{-1}
 {
@@ -281,4 +283,24 @@ void EnemyManager::UpdateEnemyPopulation()
             break;
         }
     }
+
+}
+//“G”z—ñ‚ÌŽæ“¾
+Enemy* const* EnemyManager::GetEnemies() const
+{
+    return m_pEnemy;
+}
+
+void EnemyManager::DeadEnemy()
+{
+    for(int i=0; i<MAX_ENEMY; i++)
+    {
+		Enemy* enemy = m_pEnemy[i];
+		if (enemy == nullptr) continue;
+		if (enemy->IsAlive()) continue;
+            delete m_pEnemy[i];
+            m_pEnemy[i] = nullptr;
+       
+        
+	}
 }
