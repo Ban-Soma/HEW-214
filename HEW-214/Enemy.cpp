@@ -23,7 +23,7 @@ Enemy::Enemy()
 	, m_scale{ 1.0f,1.0f,1.0f }
 	, m_moveSpeed(0.02f)
 	, m_EnemyCount(0)
-	, m_EnemyLife(0)
+	, m_EnemyLife(1)
 	, m_pEnemy (nullptr)
 {
 
@@ -75,6 +75,8 @@ void Enemy::SetPlayerPos(Player* pPlayer)
 {
 	g_pPlayer = pPlayer;
 }
+
+
 
 //“G‚Ìî•ñ‚ğ‚à‚Â
 void Enemy::SetEnemyList(Enemy** enemy, int count)
@@ -154,4 +156,20 @@ DirectX::XMFLOAT3 Enemy::GetEnemyPos()
 
 DirectX::XMFLOAT3 Enemy::GetEnemyScale() {
 	return m_scale;
+}
+
+void Enemy::TakeDamage(int damage)
+{
+		if (m_EnemyLife <= 0) return; // ‚·‚Å‚É€‚ñ‚Å‚¢‚éê‡‚Íˆ—‚µ‚È‚¢
+
+		m_EnemyLife -= damage;// ƒ_ƒ[ƒW‚ğó‚¯‚é
+
+		if (m_EnemyLife < 0)// “G‚Ì‘Ì—Í‚ª0–¢–‚É‚È‚ç‚È‚¢‚æ‚¤‚É‚·‚é
+			m_EnemyLife = 0;
+}
+
+
+bool Enemy::IsAlive() const
+{
+	return m_EnemyLife>0;
 }

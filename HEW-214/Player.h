@@ -34,5 +34,5 @@ public:
 	DirectX::XMFLOAT3 GetScale();
 
 	//プレイヤーと敵が重なった時の処理
-	int HitPlayer(Enemy** Enemys, int count);
+	int HitPlayer(Enemy** Enemys);
 };
