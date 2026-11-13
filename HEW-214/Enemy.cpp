@@ -109,7 +109,7 @@ void Enemy::FollowingEnemy()
 	DirectX::XMFLOAT3 nextPos = m_pos;
 
 	//距離が一定以下ならプレイヤーに近づく
-	if (g_distance <= 2.0f && g_distance > 0.3f)
+	if (g_distance <= 2.5f && g_distance > 0.5f)
 	{
 		//正規化して移動量を計算
 		g_direction = DirectX::XMVector3Normalize(g_direction);

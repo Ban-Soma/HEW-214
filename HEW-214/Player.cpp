@@ -15,6 +15,20 @@
 Player::Player()
 	: m_pos{ 0.0f,0.0f,0.0f }
 	, m_scale{ 1.0f,1.0f,1.0f }
+	// ダッシュ用
+	,m_isDashing(false)  // ダッシュ中か判定
+	,m_dashDirX (0.0f)      // 移動方向X
+	,m_dashDirZ(0.0f)      // 移動方向Z
+	,m_dashDistance(3.0f)  // ダッシュ距離
+	,m_dashSpeed (0.3f)    // 1フレームの移動量
+	,m_dashRemaining(0.0f) // 残りの移動距離
+	,m_prevRT (false)// 前フレームRT入力状態
+	//矢印表示
+	,m_arrowAngle(0.0f)
+	,m_stickDirX(0.0f)
+	,m_stickDirZ(0.0f)
+	,m_showArrow(false)
+
 {
 
 }
@@ -48,9 +62,19 @@ void Player::Update()
 		// デッドゾーン
 		float length = sqrtf(x * x + z * z);
 
-		if (length < 0.2f) { x = 0.0f; z = 0.0f; }
-		else               { x /= length; z /= length; } // 方向性の正規化
+		if (length < 0.2f) { x = 0.0f; z = 0.0f; m_showArrow = false;}
+		else {
+			x /= length; z /= length;// 方向性の正規化
+			//スティックの保持
+			m_stickDirX = x;
+			m_stickDirZ = z;
+			m_showArrow = true;
 
+			//矢印の回転速度の計算
+			//atan2f 入力方向から角度を計算するための関数
+			m_arrowAngle = atan2f(x, z);
+
+		} 
 		// RT入力
 		nowRT = state.Gamepad.bRightTrigger > 30;
 
@@ -108,6 +132,36 @@ void Player::Draw()
 	//描画処理
 	Geometory::SetWorld(fMat);
 	Geometory::DrawBox();
+	//矢印の描画
+	if (m_showArrow) DrawArrow();
+}
+
+void Player::DrawArrow()
+{
+	//プレイヤーの足元の高さ
+	float arrowY = m_pos.y - m_scale.y * 0.5f + 0.03f;
+
+	//矢印の読み込み
+	 // 矢印を構成するパーツの描画
+	auto DrawArrowPart = [&](float x, float z,
+							 float scaleX, float scaleZ,
+							 float angle) 
+	{
+			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scaleX, 0.025f, scaleZ);
+			DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(x, 0.0f, z);
+			DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(m_arrowAngle + angle);
+			DirectX::XMMATRIX TPlayer = DirectX::XMMatrixTranslation(m_pos.x, arrowY, m_pos.z);
+			DirectX::XMMATRIX mat = S * T * R * TPlayer;
+			mat = DirectX::XMMatrixTranspose(mat);
+			DirectX::XMFLOAT4X4 fMat;
+			DirectX::XMStoreFloat4x4(&fMat, mat);
+
+			Geometory::SetWorld(fMat);
+			Geometory::DrawBox();
+	};
+
+	// 矢印の棒部分
+	DrawArrowPart(0.0f, 0.20f, 0.04f, 0.35f, 0.0f);
 }
 
 void Player::SetPos(float x, float y, float z)

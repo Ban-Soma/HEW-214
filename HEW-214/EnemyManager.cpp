@@ -5,9 +5,6 @@
 
  extern Player* g_player = new Player;
 
-
- 
-
  EnemyManager::EnemyManager()
     :m_pEnemy{nullptr}
     ,m_activeSpawnIndex{-1}
@@ -133,7 +130,6 @@ bool EnemyManager::IsValidSpawnPosition(float x, float z)
        }
 }
 
-
 void EnemyManager::CreateEnemy(int slot, int spawnIndex)
 {
     if (slot < 0 || slot >= MAX_ENEMY) return;
@@ -241,7 +237,7 @@ void EnemyManager::UpdateEnemyPopulation()
     }
 
     //フィールド内の敵の数が足りなくなったら補充
-   const int MaxRetry = 1000;
+   const int MaxRetry = 1000000;
     for (int i = 0; i < MAX_ENEMY; i++)
     {
         if (activeCount >= MAX_ENEMY) break;
