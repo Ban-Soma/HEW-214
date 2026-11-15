@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include "Camera.h"
 
 class Enemy;
 
@@ -22,6 +23,9 @@ private:
 	float m_stickDirX;   //X軸のスティックを保持
 	float m_stickDirZ;	//Y軸のスティックを保持
 	bool m_showArrow;//矢印を表示するか
+
+	//カメラ
+	Camera* m_pCamera; //カメラ
 public:
 	Player();
 	~Player();
@@ -42,4 +46,8 @@ public:
 
 	//プレイヤーと敵が重なった時の処理
 	int HitPlayer(Enemy** Enemys);
+
+	//カメラの設定
+	void SetCamera(Camera* camera);
+
 };
