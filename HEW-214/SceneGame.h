@@ -8,6 +8,7 @@
 #include "Model.h"
 #include "Player.h"
 #include "EnemyManager.h"
+#include "CombatSystem.h"
 #include "Defines.h"
 class SceneGame : public Scene
 {
@@ -26,6 +27,7 @@ private:
 
 	Player* m_pPlayer;
 	EnemyManager* m_pEnemyManager;
+	CombatSystem* m_combatSystem;
 };
 
 #endif // __SCENE_GAME_H__

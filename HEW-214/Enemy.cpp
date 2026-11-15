@@ -23,7 +23,7 @@ Enemy::Enemy()
 	, m_scale{ 1.0f,1.0f,1.0f }
 	, m_moveSpeed(0.02f)
 	, m_EnemyCount(0)
-	, m_EnemyLife(0)
+	, m_EnemyLife(1)
 	, m_pEnemy (nullptr)
 {
 
@@ -76,6 +76,8 @@ void Enemy::SetPlayerPos(Player* pPlayer)
 	g_pPlayer = pPlayer;
 }
 
+
+
 //敵の情報をもつ
 void Enemy::SetEnemyList(Enemy** enemy, int count)
 {
@@ -107,7 +109,7 @@ void Enemy::FollowingEnemy()
 	DirectX::XMFLOAT3 nextPos = m_pos;
 
 	//距離が一定以下ならプレイヤーに近づく
-	if (g_distance <= 2.0f && g_distance > 0.3f)
+	if (g_distance <= 2.5f && g_distance > 0.5f)
 	{
 		//正規化して移動量を計算
 		g_direction = DirectX::XMVector3Normalize(g_direction);
@@ -154,4 +156,20 @@ DirectX::XMFLOAT3 Enemy::GetEnemyPos()
 
 DirectX::XMFLOAT3 Enemy::GetEnemyScale() {
 	return m_scale;
+}
+
+void Enemy::TakeDamage(int damage)
+{
+		if (m_EnemyLife <= 0) return; // すでに死んでいる場合は処理しない
+
+		m_EnemyLife -= damage;// ダメージを受ける
+
+		if (m_EnemyLife < 0)// 敵の体力が0未満にならないようにする
+			m_EnemyLife = 0;
+}
+
+
+bool Enemy::IsAlive() const
+{
+	return m_EnemyLife>0;
 }

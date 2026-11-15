@@ -5,8 +5,7 @@
 
  extern Player* g_player = new Player;
 
-
-EnemyManager::EnemyManager()
+ EnemyManager::EnemyManager()
     :m_pEnemy{nullptr}
     ,m_activeSpawnIndex{-1}
 {
@@ -131,7 +130,6 @@ bool EnemyManager::IsValidSpawnPosition(float x, float z)
        }
 }
 
-
 void EnemyManager::CreateEnemy(int slot, int spawnIndex)
 {
     if (slot < 0 || slot >= MAX_ENEMY) return;
@@ -239,7 +237,7 @@ void EnemyManager::UpdateEnemyPopulation()
     }
 
     //ƒtƒB[ƒ‹ƒh“à‚Ì“G‚Ì”‚ª‘«‚è‚È‚­‚È‚Á‚½‚ç•â[
-   const int MaxRetry = 1000;
+   const int MaxRetry = 1000000;
     for (int i = 0; i < MAX_ENEMY; i++)
     {
         if (activeCount >= MAX_ENEMY) break;
@@ -281,4 +279,24 @@ void EnemyManager::UpdateEnemyPopulation()
             break;
         }
     }
+
+}
+//“G”z—ñ‚Ìæ“¾
+Enemy* const* EnemyManager::GetEnemies() const
+{
+    return m_pEnemy;
+}
+
+void EnemyManager::DeadEnemy()
+{
+    for(int i=0; i<MAX_ENEMY; i++)
+    {
+		Enemy* enemy = m_pEnemy[i];
+		if (enemy == nullptr) continue;
+		if (enemy->IsAlive()) continue;
+            delete m_pEnemy[i];
+            m_pEnemy[i] = nullptr;
+       
+        
+	}
 }

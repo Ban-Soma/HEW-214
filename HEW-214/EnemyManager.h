@@ -58,7 +58,11 @@ public:
 	//“G‚Ì”‚Æ”z’u‚ÌŠÇ—
 	//Population...ŒÂ‘Ì”AŒÂ‘ÌŒQ‚È‚Ç•¶–¬‚É‚æ‚Á‚Ä‚±‚Æ‚È‚é
 	void UpdateEnemyPopulation();
+	//“G”z—ñ‚Ìæ“¾
+	Enemy* const* GetEnemies() const;
 
-	
+	//€–S‚µ‚½“G‚Ìˆ—
+	void DeadEnemy();
+
 
 };

@@ -42,10 +42,12 @@ public:
 
 	//追従するプレイヤーの座標を取得
 	void SetPlayerPos(Player* pPlayer);
-
 	//座標の取得
 	DirectX::XMFLOAT3 GetEnemyPos();
 	DirectX::XMFLOAT3 GetEnemyScale();
 	
-
+	void TakeDamage(int damage);
+	
+	bool IsAlive() const;
+	
 };

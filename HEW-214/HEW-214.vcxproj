@@ -145,6 +145,8 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="CombatSystem.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
@@ -169,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraDebug.h" />
+    <ClInclude Include="CombatSystem.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Enemy.h" />
@@ -187,6 +190,7 @@
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="CollisionManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
