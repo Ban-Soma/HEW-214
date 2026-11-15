@@ -21,7 +21,7 @@ void CameraDebug::Update()
 	//一秒間の移動距離から１フレームの速度が計算できるとよい
 	const float speed = METER(2.0f) / FPS;//一秒間で5メートル進む
 	
-	//カメラ位置の移動
+	//カメラ位置の移動//
 	//回り込みの処理
 	if (IsKeyPress(VK_LEFT)) { m_radXZ += speed; }
 	if (IsKeyPress(VK_RIGHT)) { m_radXZ -= speed; }
