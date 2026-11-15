@@ -46,10 +46,10 @@ void CameraDebug::Update()
 		if (IsKeyPress('Q')) { m_radius += speed; }
 		if (IsKeyPress('E')) { m_radius -= speed; }
 
-		//カメラ位置の計算
-		m_pos.x = cos(m_radY) * -sin(m_radXZ) * m_radius + m_look.x;
-		m_pos.y = sin(m_radY) * m_radius + m_look.y;
-		m_pos.z = cos(m_radY) * -cos(m_radXZ) * m_radius + m_look.z;
-
 	}
+
+	//カメラ位置の計算
+	m_pos.x = cos(m_radY) * -sin(m_radXZ) * m_radius + m_look.x;
+	m_pos.y = sin(m_radY) * m_radius + m_look.y;
+	m_pos.z = cos(m_radY) * -cos(m_radXZ) * m_radius + m_look.z;
 }
