@@ -143,7 +143,7 @@ void EnemyManager::CreateEnemy(int slot, int spawnIndex)
 
     m_pEnemy[slot]->SetEnemyPos(point.x, 0.2f, point.z);
 
-    m_pEnemy[slot]->SetEnemyScale(0.2f, 0.2f, 0.2f);
+    m_pEnemy[slot]->SetEnemyScale(0.45f, 0.45f, 0.45f);
 
     m_pEnemy[slot]->SetPlayerPos(g_player);
 
@@ -238,7 +238,7 @@ void EnemyManager::UpdateEnemyPopulation()
     }
 
     //フィールド内の敵の数が足りなくなったら補充
-   const int MaxRetry = 1000000;
+   const int MaxRetry = 100000000;
     for (int i = 0; i < MAX_ENEMY; i++)
     {
         if (activeCount >= MAX_ENEMY) break;

@@ -14,6 +14,10 @@
 
 class Model
 {
+private:
+	DirectX::XMFLOAT3 m_pos;
+	DirectX::XMFLOAT3 m_scale;
+
 public:
 	// モデル反転設定
 	enum Flip
@@ -144,7 +148,7 @@ public:
 	void SetPixelShader(PixelShader* ps);
 	bool Load(const char* file, float scale = 1.0f, Flip flip = Flip::None);
 	void Draw(int meshNo = -1);
-
+	
 	//--- 各種情報取得
 	const Mesh* GetMesh(unsigned int index);
 	uint32_t GetMeshNum();
@@ -226,6 +230,7 @@ private:
 	float			m_parametricBlend;	// パラメトリックの再生割合
 
 	Transforms		m_nodeTransform[MAX_TRANSFORM];	// アニメーション別変形情報
+
 };
 
 

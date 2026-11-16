@@ -1,14 +1,20 @@
 #pragma once
 #include <DirectXMath.h>
+#include <GameObject.h>
+#include"PlayerTrajectory.h"
+#include "Model.h"
+
 #include "Camera.h"
+
 
 class Enemy;
 
 
-class Player {
+class Player : public GameObject {
 private:
-	DirectX::XMFLOAT3 m_pos;//座標
-	DirectX::XMFLOAT3  m_scale;//拡大率
+	Model* m_pModel;
+	//DirectX::XMFLOAT3 m_pos;//座標
+	//DirectX::XMFLOAT3  m_scale;//拡大率
 	// ダッシュ用
 	bool m_isDashing;     // ダッシュ中か判定
 	float m_dashDirX;      // 移動方向X
@@ -24,8 +30,13 @@ private:
 	float m_stickDirZ;	//Y軸のスティックを保持
 	bool m_showArrow;//矢印を表示するか
 
+
+	// 軌跡
+	PlayerTrajectory m_trajectory;
+
 	//カメラ
 	Camera* m_pCamera; //カメラ
+
 public:
 	Player();
 	~Player();
@@ -47,4 +58,7 @@ public:
 	int HitPlayer(Enemy** Enemys);
 	//カメラの設定
 	void SetCamera(Camera* camera);
+
+	bool LoadFbx(const char* file);
+
 };

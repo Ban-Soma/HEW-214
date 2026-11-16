@@ -3,7 +3,7 @@
 
 VertexShader* ShaderList::m_pVS[VS_KIND_MAX];
 PixelShader* ShaderList::m_pPS[PS_KIND_MAX];
-DirectX::XMFLOAT4X4 ShaderList::m_wvp[4];
+DirectX::XMFLOAT4X4 ShaderList::m_wvp[3];
 
 ShaderList::ShaderList()
 {
@@ -76,13 +76,6 @@ PixelShader* ShaderList::GetPS(PSKind ps)
 void ShaderList::SetWorld(const DirectX::XMFLOAT4X4& world)
 {
 	m_wvp[0] = world;
-
-	// ãtì]íuçsóÒÇÃåvéZ
-	DirectX::XMMATRIX mat = DirectX::XMLoadFloat4x4(&world);
-	mat = DirectX::XMMatrixTranspose(mat);
-	mat = DirectX::XMMatrixInverse(nullptr, mat);
-	DirectX::XMStoreFloat4x4(&m_wvp[1], mat);
-
 	for (int i = 0; i < VS_KIND_MAX; ++i)
 	{
 		m_pVS[i]->WriteBuffer(0, m_wvp);
@@ -90,7 +83,7 @@ void ShaderList::SetWorld(const DirectX::XMFLOAT4X4& world)
 }
 void ShaderList::SetView(const DirectX::XMFLOAT4X4& view)
 {
-	m_wvp[2] = view;
+	m_wvp[1] = view;
 	for (int i = 0; i < VS_KIND_MAX; ++i)
 	{
 		m_pVS[i]->WriteBuffer(0, m_wvp);
@@ -98,7 +91,7 @@ void ShaderList::SetView(const DirectX::XMFLOAT4X4& view)
 }
 void ShaderList::SetProjection(const DirectX::XMFLOAT4X4& proj)
 {
-	m_wvp[3] = proj;
+	m_wvp[2] = proj;
 	for (int i = 0; i < VS_KIND_MAX; ++i)
 	{
 		m_pVS[i]->WriteBuffer(0, m_wvp);
@@ -171,7 +164,6 @@ struct VS_OUT {
 };
 cbuffer WVP : register(b0) {
 	float4x4 world;
-	float4x4 invW;
 	float4x4 view;
 	float4x4 proj;
 };
@@ -182,7 +174,7 @@ VS_OUT main(VS_IN vin) {
 	vout.wPos = vout.pos;
 	vout.pos = mul(vout.pos, view);
 	vout.pos = mul(vout.pos, proj);
-	vout.normal = mul(vin.normal, (float3x3)invW);
+	vout.normal = mul(vin.normal, (float3x3)world);
 	vout.uv = vin.uv;
 	vout.color = vin.color;
 	return vout;
@@ -210,7 +202,6 @@ struct VS_OUT {
 };
 cbuffer WVP : register(b0) {
 	float4x4 world;
-	float4x4 invW;
 	float4x4 view;
 	float4x4 proj;
 };

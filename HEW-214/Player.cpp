@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <DirectXMath.h>
+#include <ShaderList.h>
 #include "Geometory.h"
 #include "SceneGame.h"
 #include "Input.h"
@@ -8,13 +9,14 @@
 #include <Xinput.h>
 #include <cmath>
 #include<algorithm>
+#include "PlayerTrajectory.h"
 
 #pragma comment(lib, "Xinput.lib")
 
 
 Player::Player()
-	: m_pos{ 0.0f,0.0f,0.0f }
-	, m_scale{ 1.0f,1.0f,1.0f }
+    //モデル描画
+	:m_pModel(nullptr)
 	// ダッシュ用
 	,m_isDashing(false)  // ダッシュ中か判定
 	,m_dashDirX (0.0f)      // 移動方向X
@@ -37,7 +39,7 @@ Player::Player()
 
 Player::~Player()
 {
-
+	SAFE_DELETE(m_pModel);
 }
 
 void Player::Update()
@@ -159,20 +161,53 @@ void Player::Update()
 
 void Player::Draw()
 {
-	//変換行列の計算
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-	DirectX::XMMATRIX mat = S * T;
+	if (m_pModel) {
+		//モデルを表示するためのワールド座標を計算
+		DirectX::XMFLOAT4X4 fWorld;
+		DirectX::XMMATRIX world;
+		DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
+		DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(m_rotation.x);
+		DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_rotation.y);
+		DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(m_rotation.z);
+		DirectX::XMMATRIX R = Rx * Ry * Rz;//回転行列のみを掛け合わせて格納
+		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
+		world = S * R * T;
+		world = DirectX::XMMatrixTranspose(world);
+		DirectX::XMStoreFloat4x4(&fWorld, world);
 
-	//変換行列をGPUに渡すための前処理
-	mat = XMMatrixTranspose(mat);
-	DirectX::XMFLOAT4X4 fMat;
-	DirectX::XMStoreFloat4x4(&fMat, mat);
+		//シェーダーに必要なデータを設定
+		ShaderList::SetWorld(fWorld);
+		ShaderList::SetView(m_pCamera->GetViewMatrix());
+		ShaderList::SetProjection(m_pCamera->GetProjectionMatrix());
 
+		//モデルに使用する各種シェーダーの設定
+		m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+		m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-	//描画処理
-	Geometory::SetWorld(fMat);
-	Geometory::DrawBox();
+		//メッシュ別にモデルを表示
+		for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+		{
+			//モデルのメッシュを取得
+			const Model::Mesh* mesh = m_pModel->GetMesh(i);
+			//メッシュに割り当てられるマテリアルを取得
+			Model::Material material = *m_pModel->GetMaterial(mesh->materialID);
+
+			material.ambient.x = 0.7f;
+			material.ambient.y = 0.7f;
+			material.ambient.z = 0.7f;
+			material.ambient.w = 1.0f;
+
+			//シェーダーにマテリアルを設定
+			ShaderList::SetMaterial(material);
+			//モデルの描画(内部的に一括で行っていた描画処理を、メッシュごとの描画処理に変更)
+			m_pModel->Draw(i);
+
+			//深度テストの有効化
+			SetDepthTest(DEPTH_ENABLE);
+		}
+	}
+	// 軌跡の描画
+	m_trajectory.Draw();
 	//矢印の描画
 	if (m_showArrow) DrawArrow();
 }
@@ -203,30 +238,6 @@ void Player::DrawArrow()
 
 	// 矢印の棒部分
 	DrawArrowPart(0.0f, 0.20f, 0.04f, 0.35f, 0.0f);
-}
-
-void Player::SetPos(float x, float y, float z)
-{
-	m_pos.x = x;
-	m_pos.y = y;
-	m_pos.z = z;
-}
-
-void Player::SetScale(float x, float y, float z)
-{
-	m_scale.x = x;
-	m_scale.y = y;
-	m_scale.z = z;
-}
-
-DirectX::XMFLOAT3 Player::GetPos()
-{
-	return m_pos;
-}
-
-DirectX::XMFLOAT3 Player::GetScale()
-{
-	return m_scale;
 }
 
 int Player::HitPlayer(Enemy** Enemys)
@@ -262,4 +273,14 @@ void Player::SetCamera(Camera* camera)
 {
 	m_pCamera = camera;
 }
+
+bool Player::LoadFbx(const char* file)
+{
+	//モデルが生成されてなかったら生成する
+	if (m_pModel == nullptr) {
+		m_pModel = new Model();
+	}
+	return m_pModel->Load(file, 0.5f);
+}
+
 
