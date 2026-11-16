@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "Defines.h"
 #include "Player.h"
+#include <Xinput.h>
 
 CameraDebug::CameraDebug()
 	:m_radXZ(0.0f)
@@ -21,20 +22,31 @@ void CameraDebug::Update()
 	//一秒間の移動距離から１フレームの速度が計算できるとよい
 	const float speed = METER(2.0f) / FPS;//一秒間で5メートル進む
 	
-	//カメラ位置の移動//
+	//カメラ位置の移動
 	//回り込みの処理
-	if (IsKeyPress(VK_LEFT)) { m_radXZ += speed; }
-	if (IsKeyPress(VK_RIGHT)) { m_radXZ -= speed; }
-	/*if (IsKeyPress(VK_UP)) { m_radY += speed; }
-	if (IsKeyPress(VK_DOWN)) { m_radY -= speed; }*/
+	if (XInputGetState(0, &state) == ERROR_SUCCESS) {//XInputGetStateは、コントローラーが接続されていればERROR_SUCCESSを返す
+		//state.Gamepad.sThumbRXは、右スティックの左右方向の値傾きなしだと、値は0。右に傾けると値は＋左は-
+		{
+			if (state.Gamepad.sThumbRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) //値が右スティックのデッドゾーンより大きいなら傾けていると判断
+			{
+				m_radXZ += speed;
+			}
+			else if (state.Gamepad.sThumbRX < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)//値が左スティックのデッドゾーンより小さいなら傾けていると判断
+			{
+				m_radXZ -= speed;
+			}
+		}
 
-	//カメラの距離を替える処理
-	if (IsKeyPress('Q')) { m_radius += speed; }
-	if (IsKeyPress('E')) { m_radius -= speed; }
-	
+		if (IsKeyPress(VK_RIGHT)) {}
+
+		//カメラの距離を替える処理
+		if (IsKeyPress('Q')) { m_radius += speed; }
+		if (IsKeyPress('E')) { m_radius -= speed; }
+
+	}
+
 	//カメラ位置の計算
 	m_pos.x = cos(m_radY) * -sin(m_radXZ) * m_radius + m_look.x;
 	m_pos.y = sin(m_radY) * m_radius + m_look.y;
 	m_pos.z = cos(m_radY) * -cos(m_radXZ) * m_radius + m_look.z;
-
 }

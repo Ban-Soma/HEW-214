@@ -28,6 +28,8 @@ Player::Player()
 	,m_stickDirX(0.0f)
 	,m_stickDirZ(0.0f)
 	,m_showArrow(false)
+	//カメラ
+	,m_pCamera(nullptr)
 
 {
 
@@ -40,7 +42,9 @@ Player::~Player()
 
 void Player::Update()
 {
-	float MoveSpeed = 0.05f;
+	const float MoveSpeed = 0.05f;
+
+	// キーボード移動（現状どおりワールド座標基準）
 	if (IsKeyPress('W')) { m_pos.z += MoveSpeed; }
 	if (IsKeyPress('S')) { m_pos.z -= MoveSpeed; }
 	if (IsKeyPress('A')) { m_pos.x -= MoveSpeed; }
@@ -48,7 +52,7 @@ void Player::Update()
 
 	// Xboxコントローラー
 	// コントローラーの入力情報を格納する構造体
-	XINPUT_STATE state = {};
+	XINPUT_STATE state{};
 
 	// 現在RTボタンが押されているか
 	bool nowRT = false;
@@ -62,35 +66,56 @@ void Player::Update()
 		// デッドゾーン
 		float length = sqrtf(x * x + z * z);
 
-		if (length < 0.2f) { x = 0.0f; z = 0.0f; m_showArrow = false;}
-		else {
-			x /= length; z /= length;// 方向性の正規化
-			//スティックの保持
-			m_stickDirX = x;
-			m_stickDirZ = z;
+		float moveX = 0.0f;
+		float moveZ = 0.0f;
+
+		if (length < 0.2f)
+		{
+			m_showArrow = false;
+		}
+		else if (m_pCamera)
+		{
+			// 入力方向を単位化
+			x /= length;z /= length;
+
+			// カメラからプレイヤーに向かう水平前方向を求める
+			DirectX::XMFLOAT3 camPos = m_pCamera->GetPos();
+			DirectX::XMVECTOR vForward = DirectX::XMVectorSet(m_pos.x - camPos.x,0.0f,m_pos.z - camPos.z,0.0f);
+			vForward = DirectX::XMVector3Normalize(vForward);
+			DirectX::XMFLOAT3 forward;
+			DirectX::XMStoreFloat3(&forward, vForward);
+
+			// 水平右方向
+			DirectX::XMFLOAT3 right{forward.z,0.0f,-forward.x};
+
+			// スティック入力をワールド座標の移動方向に変換
+			moveX = right.x * x + forward.x * z;
+			moveZ = right.z * x + forward.z * z;
+
+			m_stickDirX = moveX;
+			m_stickDirZ = moveZ;
+			m_arrowAngle = atan2f(moveX, moveZ);
 			m_showArrow = true;
 
-			//矢印の回転速度の計算
-			//atan2f 入力方向から角度を計算するための関数
-			m_arrowAngle = atan2f(x, z);
+			// RTを押した瞬間にダッシュ開始
+			nowRT = state.Gamepad.bRightTrigger > 30;
 
-		} 
-		// RT入力
-		nowRT = state.Gamepad.bRightTrigger > 30;
-
-		// RT押した瞬間にダッシュ開始
-		if (nowRT && !m_prevRT && !m_isDashing)
-		{
-			if(length >= 0.2f)
+			if (nowRT && !m_prevRT && !m_isDashing)
 			{
 				m_isDashing = true;
-
-				m_dashDirX = x;
-				m_dashDirZ = z;
-
+				m_dashDirX = moveX;
+				m_dashDirZ = moveZ;
 				m_dashRemaining = m_dashDistance;
 			}
 		}
+		else
+		{
+			// カメラ未設定時は矢印を表示しない
+			m_showArrow = false;
+		}
+
+		// スティックがデッドゾーン内でもRT状態を記録する
+		nowRT = state.Gamepad.bRightTrigger > 30;
 	}
 
 	m_prevRT = nowRT;
@@ -112,8 +137,6 @@ void Player::Update()
 			m_isDashing = false;
 		}
 	}
-	
-
 }
 
 void Player::Draw()
@@ -215,5 +238,10 @@ int Player::HitPlayer(Enemy** Enemys)
 	
 	//最後まで見つからなかったら-1
 	return -1;
+}
+
+void Player::SetCamera(Camera* camera)
+{
+	m_pCamera = camera;
 }
 
