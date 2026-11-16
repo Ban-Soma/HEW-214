@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "Geometory.h"
+#include "ShaderList.h"
 #include "Defines.h"
 #include <DirectXMath.h>
 
@@ -19,12 +20,12 @@
 Player* g_pPlayer = new Player();
 
 Enemy::Enemy()
-	: m_pos{0.0f,0.0f,0.0f}
-	, m_scale{ 1.0f,1.0f,1.0f }
-	, m_moveSpeed(0.02f)
+	: m_moveSpeed(0.02f)
 	, m_EnemyCount(0)
 	, m_EnemyLife(1)
 	, m_pEnemy (nullptr)
+	, m_pModel(nullptr)
+	, m_pCamera(nullptr)
 	, m_shotTimer(0)
 	, m_shotInterval(60)
 {
@@ -33,7 +34,7 @@ Enemy::Enemy()
 
 Enemy::~Enemy()
 {
-
+	SAFE_DELETE(m_pModel);
 }
 
 void Enemy::Update()
@@ -50,47 +51,60 @@ void Enemy::Update()
 
 void Enemy::Draw()
 {
-	//変換行列の計算
+	if (m_pModel == nullptr || m_pCamera == nullptr) return;
+	//モデルを表示するためのワールド座標を計算
+	DirectX::XMFLOAT4X4 fWorld;
+	DirectX::XMMATRIX world;
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
+	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(m_rotation.x);
+	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(m_rotation.y);
+	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(m_rotation.z);
+	DirectX::XMMATRIX R = Rx * Ry * Rz;//回転行列のみを掛け合わせて格納
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-	DirectX::XMMATRIX mat = S * T;
+	world = S * R * T;
+	world = DirectX::XMMatrixTranspose(world);
+	DirectX::XMStoreFloat4x4(&fWorld, world);
 
-	//変換行列をGPUに渡すための前処理
-	mat = XMMatrixTranspose(mat);
-	DirectX::XMFLOAT4X4 fMat;
-	DirectX::XMStoreFloat4x4(&fMat, mat);
+	//シェーダーに必要なデータを設定
+	ShaderList::SetWorld(fWorld);
+	ShaderList::SetView(m_pCamera->GetViewMatrix());
+	ShaderList::SetProjection(m_pCamera->GetProjectionMatrix());
 
-	//描画処理
-	Geometory::SetWorld(fMat);
-	Geometory::DrawBox();
+	//モデルに使用する各種シェーダーの設定
+	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
+	//メッシュ別にモデルを表示
+	for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
+	{
+		//モデルのメッシュを取得
+		const Model::Mesh* mesh = m_pModel->GetMesh(i);
+		//メッシュに割り当てられるマテリアルを取得
+		Model::Material material = *m_pModel->GetMaterial(mesh->materialID);
+
+		material.ambient.x = 0.7f;
+		material.ambient.y = 0.7f;
+		material.ambient.z = 0.7f;
+		material.ambient.w = 1.0f;
+
+		//シェーダーにマテリアルを設定
+		ShaderList::SetMaterial(material);
+		//モデルの描画(内部的に一括で行っていた描画処理を、メッシュごとの描画処理に変更)
+		m_pModel->Draw(i);
+
+		//深度テストの有効化
+		SetDepthTest(DEPTH_ENABLE);
+	}
 	/*for (Bullet& bullet : m_bullets)
 	{
 		bullet.Draw();
 	}*/
 }
 
-void Enemy::SetEnemyPos(float x, float y, float z)
-{
-	m_pos.x = x;
-	m_pos.y = y;
-	m_pos.z = z;
-
-}
-
-void Enemy::SetEnemyScale(float x, float y, float z)
-{
-	m_scale.x = x;
-	m_scale.y = y;
-	m_scale.z = z;
-}
-
 void Enemy::SetPlayerPos(Player* pPlayer)
 {
 	g_pPlayer = pPlayer;
 }
-
-
 
 //敵の情報をもつ
 void Enemy::SetEnemyList(Enemy** enemy, int count)
@@ -142,7 +156,7 @@ void Enemy::FollowingEnemy()
 			if (m_pEnemy[i] == nullptr) continue;
 			//自分自身と等しければcontinue
 			if (m_pEnemy[i] == this) continue;
-			DirectX::XMFLOAT3 otherPos = m_pEnemy[i]->GetEnemyPos();
+			DirectX::XMFLOAT3 otherPos = m_pEnemy[i]->GetPos();
 
 
 			// 距離計算し、一定距離未満なら分離処理を行う
@@ -211,16 +225,6 @@ void Enemy::Shoot()
 		//m_bullets.emplace_back(m_pos, bulletDirection);
 	}
 }
-
-DirectX::XMFLOAT3 Enemy::GetEnemyPos()
-{
-	return m_pos;
-}
-
-DirectX::XMFLOAT3 Enemy::GetEnemyScale() {
-	return m_scale;
-}
-
 void Enemy::TakeDamage(int damage)
 {
 		if (m_EnemyLife <= 0) return; // すでに死んでいる場合は処理しない
@@ -235,4 +239,15 @@ void Enemy::TakeDamage(int damage)
 bool Enemy::IsAlive() const
 {
 	return m_EnemyLife>0;
+}
+
+void Enemy::SetEnemyCamera(Camera* camera)
+{
+	m_pCamera = camera;
+}
+
+bool Enemy::LoadEnemyFbx(const char* file)
+{
+	if (m_pModel == nullptr) m_pModel = new Model();
+	return m_pModel->Load(file, 0.5f);
 }
