@@ -1,6 +1,10 @@
 #pragma once
 #include <DirectXMath.h>
+
 #include"PlayerTrajectory.h"
+
+#include "Camera.h"
+
 
 class Enemy;
 
@@ -24,8 +28,13 @@ private:
 	float m_stickDirZ;	//Y軸のスティックを保持
 	bool m_showArrow;//矢印を表示するか
 
+
 	// 軌跡
 	PlayerTrajectory m_trajectory;
+
+	//カメラ
+	Camera* m_pCamera; //カメラ
+
 public:
 	Player();
 	~Player();
@@ -46,4 +55,8 @@ public:
 
 	//プレイヤーと敵が重なった時の処理
 	int HitPlayer(Enemy** Enemys);
+
+	//カメラの設定
+	void SetCamera(Camera* camera);
+
 };

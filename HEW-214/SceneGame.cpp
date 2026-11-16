@@ -38,6 +38,7 @@ SceneGame::SceneGame()
 	m_pPlayer = new Player();
 	m_pPlayer->SetPos(0.0f, 0.2f, 0.0f);
 	m_pPlayer->SetScale(0.2f, 0.2f, 0.2f);
+	m_pPlayer->SetCamera(m_pCamera);
 
 	m_pEnemyManager = new EnemyManager();
 	m_pEnemyManager->InitEnemyManager(m_pPlayer);
