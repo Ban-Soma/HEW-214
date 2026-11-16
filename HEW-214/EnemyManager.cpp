@@ -237,7 +237,7 @@ void EnemyManager::UpdateEnemyPopulation()
     }
 
     //フィールド内の敵の数が足りなくなったら補充
-   const int MaxRetry = 1000000;
+   const int MaxRetry = 100000000;
     for (int i = 0; i < MAX_ENEMY; i++)
     {
         if (activeCount >= MAX_ENEMY) break;
