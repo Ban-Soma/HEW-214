@@ -4,7 +4,7 @@
 
 #include"PlayerTrajectory.h"
 
-#include "Camera.h"
+
 
 
 class Enemy;
@@ -36,8 +36,7 @@ private:
 	//カメラ
 	Camera* m_pCamera; //カメラ
 
-	//カメラ
-	Camera* m_pCamera; //カメラ
+	
 public:
 	Player();
 	~Player();

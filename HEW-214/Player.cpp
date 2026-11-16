@@ -138,6 +138,9 @@ void Player::Update()
 			m_isDashing = false;
 		}
 	}
+
+	m_trajectory.AddPoint(m_pos);
+
 }
 
 void Player::Draw()
