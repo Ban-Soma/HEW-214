@@ -17,6 +17,7 @@
 /// 
 
 Player* g_pPlayer = new Player();
+Bullet* g_pBullet = new Bullet();
 
 Enemy::Enemy()
 	: m_pos{0.0f,0.0f,0.0f}
