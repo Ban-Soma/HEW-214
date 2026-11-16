@@ -135,6 +135,9 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>ソース ファイル\System\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.h">
@@ -208,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>ヘッダー ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>ヘッダー ファイル\System\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -59,7 +59,7 @@ private:
 private:
 	static VertexShader* m_pVS[VS_KIND_MAX];
 	static PixelShader* m_pPS[PS_KIND_MAX];
-	static DirectX::XMFLOAT4X4 m_wvp[4];
+	static DirectX::XMFLOAT4X4 m_wvp[3];
 };
 
 #endif // __SHADER_LIST_H__
