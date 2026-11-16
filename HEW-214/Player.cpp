@@ -138,8 +138,6 @@ void Player::Update()
 			m_isDashing = false;
 		}
 	}
-	
-
 }
 
 void Player::Draw()

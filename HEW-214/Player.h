@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 
+
 #include"PlayerTrajectory.h"
 
 #include "Camera.h"
