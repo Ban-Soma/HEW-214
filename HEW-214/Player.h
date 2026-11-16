@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include"PlayerTrajectory.h"
 
 class Enemy;
 
@@ -22,6 +23,9 @@ private:
 	float m_stickDirX;   //X軸のスティックを保持
 	float m_stickDirZ;	//Y軸のスティックを保持
 	bool m_showArrow;//矢印を表示するか
+
+	// 軌跡
+	PlayerTrajectory m_trajectory;
 public:
 	Player();
 	~Player();

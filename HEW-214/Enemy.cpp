@@ -25,6 +25,8 @@ Enemy::Enemy()
 	, m_EnemyCount(0)
 	, m_EnemyLife(1)
 	, m_pEnemy (nullptr)
+	, m_shotTimer(0)
+	, m_shotInterval(60)
 {
 
 }
@@ -37,6 +39,13 @@ Enemy::~Enemy()
 void Enemy::Update()
 {
 	FollowingEnemy();
+
+	Shoot();
+
+	/*for (Bullet& bullet : m_bullets)
+	{
+		bullet.Update();
+	}*/
 }
 
 void Enemy::Draw()
@@ -54,6 +63,11 @@ void Enemy::Draw()
 	//描画処理
 	Geometory::SetWorld(fMat);
 	Geometory::DrawBox();
+
+	/*for (Bullet& bullet : m_bullets)
+	{
+		bullet.Draw();
+	}*/
 }
 
 void Enemy::SetEnemyPos(float x, float y, float z)
@@ -146,6 +160,55 @@ void Enemy::FollowingEnemy()
 	//重なっていないときだけ位置を確定させる
 	if (!bOverlap) {
 		m_pos = nextPos;
+	}
+}
+
+void Enemy::Shoot()
+{
+	if (g_pPlayer == nullptr) return;
+
+	// プレイヤーの位置を取得
+	DirectX::XMFLOAT3 playerPos = g_pPlayer->GetPos();
+
+	// プレイヤーへの方向を計算
+	DirectX::XMVECTOR direction = DirectX::XMVectorSet(
+		playerPos.x - m_pos.x,
+		0.0f,
+		playerPos.z - m_pos.z,
+		0.0f
+	);
+
+	// プレイヤーとの距離を計算
+	float distance = DirectX::XMVectorGetX(
+		DirectX::XMVector3Length(direction)
+	);
+
+	// 射撃する距離
+	const float shootDistance = 5.0f;
+
+	// 距離が5.0より遠ければ射撃しない
+	if (distance > shootDistance)
+	{
+		m_shotTimer = 0;
+		return;
+	}
+
+	// 発射間隔をカウント
+	m_shotTimer++;
+
+	// 発射間隔になったら弾を発射
+	if (m_shotTimer >= m_shotInterval)
+	{
+		m_shotTimer = 0;
+
+		// 方向を正規化
+		direction = DirectX::XMVector3Normalize(direction);
+
+		DirectX::XMFLOAT3 bulletDirection;
+		DirectX::XMStoreFloat3(&bulletDirection, direction);
+
+		//// 弾を生成
+		//m_bullets.emplace_back(m_pos, bulletDirection);
 	}
 }
 

@@ -113,11 +113,16 @@ void Player::Update()
 		}
 	}
 	
-
+	// 現在のプレイヤー座標を軌跡に保存
+	m_trajectory.AddPoint(m_pos);
 }
 
 void Player::Draw()
 {
+	// 軌跡の描画
+	m_trajectory.Draw();
+
+
 	//変換行列の計算
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
