@@ -22,6 +22,10 @@ void CameraDebug::Update()
 	//一秒間の移動距離から１フレームの速度が計算できるとよい
 	const float speed = METER(2.0f) / FPS;//一秒間で5メートル進む
 	
+	// Xboxコントローラー
+	// コントローラーの入力情報を格納する構造体
+	XINPUT_STATE state{};
+
 	//カメラ位置の移動
 	//回り込みの処理
 	if (XInputGetState(0, &state) == ERROR_SUCCESS) {//XInputGetStateは、コントローラーが接続されていればERROR_SUCCESSを返す

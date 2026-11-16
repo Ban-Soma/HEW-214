@@ -53,6 +53,9 @@ void Player::Update()
 	// Xboxコントローラー
 	// コントローラーの入力情報を格納する構造体
 	XINPUT_STATE state{};
+	//コントローラーのバイブレーション
+	XINPUT_VIBRATION vibration;
+	ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
 
 	// 現在RTボタンが押されているか
 	bool nowRT = false;
@@ -136,6 +139,21 @@ void Player::Update()
 			m_dashRemaining = 0.0f;
 			m_isDashing = false;
 		}
+	}
+
+	//コントローラーのバイブレーション判定
+	if (nowRT == false)
+	{
+		// 左モーター(低周波)を50%
+		vibration.wLeftMotorSpeed = 32767;
+		// 右モーター(高周波)を100%
+		vibration.wRightMotorSpeed = 32767;
+		// コントローラー0番に送信
+		XInputSetState(0, &vibration);
+	}
+	else if(nowRT == true)
+	{
+		XInputSetState(0, &vibration);
 	}
 }
 

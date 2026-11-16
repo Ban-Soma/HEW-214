@@ -2,6 +2,7 @@
 #include "Player.h"
 #include <cmath>　//計算標準ライブラリ
 #include <cstdlib>//乱数など
+#include <Xinput.h>
 
  extern Player* g_player = new Player;
 
@@ -289,14 +290,23 @@ Enemy* const* EnemyManager::GetEnemies() const
 
 void EnemyManager::DeadEnemy()
 {
+    //コントローラーのバイブレーション
+    XINPUT_VIBRATION vibration;
+    ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+
     for(int i=0; i<MAX_ENEMY; i++)
     {
 		Enemy* enemy = m_pEnemy[i];
 		if (enemy == nullptr) continue;
 		if (enemy->IsAlive()) continue;
+
+        // 左モーター(低周波)を50%
+        vibration.wLeftMotorSpeed = 32767;
+        // 右モーター(高周波)を100%
+        vibration.wRightMotorSpeed = 32767;
+        // コントローラー0番に送信
+        XInputSetState(0, &vibration);
             delete m_pEnemy[i];
             m_pEnemy[i] = nullptr;
-       
-        
 	}
 }

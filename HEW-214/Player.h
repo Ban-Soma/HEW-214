@@ -43,11 +43,8 @@ public:
 	DirectX::XMFLOAT3 GetPos();
 	//大きさの取得
 	DirectX::XMFLOAT3 GetScale();
-
 	//プレイヤーと敵が重なった時の処理
 	int HitPlayer(Enemy** Enemys);
-
 	//カメラの設定
 	void SetCamera(Camera* camera);
-
 };

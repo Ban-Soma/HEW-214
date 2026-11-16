@@ -66,6 +66,4 @@ public:
 
 	//€–S‚µ‚½“G‚Ìˆ—
 	void DeadEnemy();
-
-
 };
