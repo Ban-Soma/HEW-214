@@ -211,6 +211,9 @@ int Player::HitPlayer(Enemy** Enemys)
 			if (DistanceX * DistanceX + DistanceZ * DistanceZ < limitX * limitX + limitZ * limitZ) {
 				return i;
 			}
+
+
+
 		}
 	
 	//ÅŒã‚Ü‚ÅŒ©‚Â‚©‚ç‚È‚©‚Á‚½‚ç-1
