@@ -8,6 +8,7 @@
 #include "DirectXMath.h"
 #include "CollisionManager.h"
 
+
 SceneGame::SceneGame()
 	:m_pGround(nullptr)
 	,m_pGoal(nullptr)
@@ -37,6 +38,14 @@ SceneGame::SceneGame()
 
 	m_pEnemyManager = new EnemyManager();
 	m_pEnemyManager->InitEnemyManager(m_pPlayer);
+	ID3D11Device* device = GetDevice();
+	ID3D11DeviceContext* context = GetContext();
+
+	m_debugInfo.Initialize(device, context, "Assets/Fonts/APJapanesefont.ttf");
+	m_debugInfo.RegisterPlayer(m_pPlayer);
+	m_debugInfo.RegisterEnemyManager(m_pEnemyManager);
+	
+	
 }
 
 SceneGame::~SceneGame()
@@ -47,7 +56,7 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pGoal);
 	SAFE_DELETE(m_pGround);
-
+	m_debugInfo.Finalize();
 }
 
 void SceneGame::Update()
@@ -67,6 +76,8 @@ void SceneGame::Update()
 	m_combatSystem->Update(*m_pPlayer, *m_pEnemyManager);
 	m_pEnemyManager->DeadEnemy();
 	m_pCamera->SetLook(m_pPlayer->GetPos());
+	//デバッグ用数値の更新
+	m_debugInfo.Update();
 	
 }
 
@@ -85,5 +96,7 @@ void SceneGame::Draw()
 	m_pGoal->Draw();
 	m_pPlayer->Draw();	
 	m_pEnemyManager->DrawEnemyManager();
+	//デバッグ用数値の描画
+	m_debugInfo.Draw();
 	
 }
