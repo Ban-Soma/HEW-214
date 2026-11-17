@@ -1,12 +1,13 @@
 #pragma once
 #include <DirectXMath.h>
+#include <vector>
 #include "Bullet.h"
 
 
 //クラスの前方宣言　不要なヘッダのインクルードを減らせる。
 class Player;
 
-class Bullet;
+
 
 class Enemy {
 private:
@@ -15,7 +16,7 @@ private:
 	int m_shotTimer;       // 発射までの経過フレーム
 	int m_shotInterval;    // 発射間隔
 
-	/*std::vector<Bullet> m_bullets;*/
+	std::vector<Bullet> m_bullets;
 
 	protected:
 	DirectX::XMFLOAT3 m_pos;

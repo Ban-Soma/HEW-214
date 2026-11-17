@@ -3,6 +3,7 @@
 #include <GameObject.h>
 #include"PlayerTrajectory.h"
 #include "Model.h"
+#include "Camera.h"
 
 
 

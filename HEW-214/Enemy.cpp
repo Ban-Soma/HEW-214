@@ -43,10 +43,12 @@ void Enemy::Update()
 
 	Shoot();
 
-	/*for (Bullet& bullet : m_bullets)
+	for (Bullet& bullet : m_bullets)
 	{
 		bullet.Update();
-	}*/
+	}
+
+	
 }
 
 void Enemy::Draw()
@@ -65,10 +67,12 @@ void Enemy::Draw()
 	Geometory::SetWorld(fMat);
 	Geometory::DrawBox();
 
-	/*for (Bullet& bullet : m_bullets)
+	for (Bullet& bullet : m_bullets)
 	{
 		bullet.Draw();
-	}*/
+	}
+
+	
 }
 
 void Enemy::SetEnemyPos(float x, float y, float z)
@@ -164,6 +168,7 @@ void Enemy::FollowingEnemy()
 	}
 }
 
+// íeÇÃî≠éÀ
 void Enemy::Shoot()
 {
 	if (g_pPlayer == nullptr) return;
@@ -185,9 +190,9 @@ void Enemy::Shoot()
 	);
 
 	// éÀåÇÇ∑ÇÈãóó£
-	const float shootDistance = 5.0f;
+	const float shootDistance = 2.0f;
 
-	// ãóó£Ç™5.0ÇÊÇËâìÇØÇÍÇŒéÀåÇÇµÇ»Ç¢
+	// ãóó£Ç™shootDistanceÇÊÇËâìÇØÇÍÇŒéÀåÇÇµÇ»Ç¢
 	if (distance > shootDistance)
 	{
 		m_shotTimer = 0;
@@ -208,8 +213,8 @@ void Enemy::Shoot()
 		DirectX::XMFLOAT3 bulletDirection;
 		DirectX::XMStoreFloat3(&bulletDirection, direction);
 
-		//// íeÇê∂ê¨
-		//m_bullets.emplace_back(m_pos, bulletDirection);
+		// íeÇê∂ê¨
+		m_bullets.emplace_back(m_pos, bulletDirection);
 	}
 }
 
