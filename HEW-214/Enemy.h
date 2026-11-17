@@ -1,5 +1,8 @@
 #pragma once
 #include <DirectXMath.h>
+#include <GameObject.h>
+#include <Camera.h>
+#include <Model.h>
 #include <vector>
 #include "Bullet.h"
 
@@ -9,9 +12,11 @@ class Player;
 
 
 
-class Enemy {
+class Enemy : public GameObject  {
 private:
 	Enemy** m_pEnemy;
+	Camera* m_pCamera;
+	Model* m_pModel;
 
 	int m_shotTimer;       // 発射までの経過フレーム
 	int m_shotInterval;    // 発射間隔
@@ -19,15 +24,9 @@ private:
 	std::vector<Bullet> m_bullets;
 
 	protected:
-	DirectX::XMFLOAT3 m_pos;
-	DirectX::XMFLOAT3 m_scale;
-
 	float m_moveSpeed; //的の移動スピード
 	int m_EnemyCount; //フィールドに生成されてる敵の数
 	int m_EnemyLife; //敵のHP
-
-
- 
 
 public:
 	//コンストラクタ
@@ -38,10 +37,6 @@ public:
 	void Update();
 	//描画処理
 	void Draw();
-	//座標の設定
-	void SetEnemyPos(float x, float y, float z);
-	//拡大率の設定
-	void SetEnemyScale(float x, float y, float z);
 
 	//敵の情報を居ってる配列
 	void SetEnemyList(Enemy** enmey, int count);
@@ -56,12 +51,13 @@ public:
 
 	//追従するプレイヤーの座標を取得
 	void SetPlayerPos(Player* pPlayer);
-	//座標の取得
-	DirectX::XMFLOAT3 GetEnemyPos();
-	DirectX::XMFLOAT3 GetEnemyScale();
 	
 	void TakeDamage(int damage);
 	
 	bool IsAlive() const;
+
+	//カメラの処理
+	void SetEnemyCamera(Camera* camera);
+	bool LoadEnemyFbx(const char* file);
 	
 };

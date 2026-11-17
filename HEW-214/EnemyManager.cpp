@@ -3,10 +3,11 @@
 #include <cmath>　//計算標準ライブラリ
 #include <cstdlib>//乱数など
 
- extern Player* g_player = new Player;
+ Player* g_player = nullptr;
 
  EnemyManager::EnemyManager()
     :m_pEnemy{nullptr}
+    ,m_pCamera(nullptr)
     ,m_activeSpawnIndex{-1}
 {
  
@@ -15,6 +16,10 @@
 //終了
 EnemyManager::~EnemyManager()
 {
+    
+    for (int i = 0; i < MAX_ENEMY; i++) {
+        SAFE_DELETE(m_pEnemy[i]);
+    }
 }
 
 //初期化
@@ -115,7 +120,7 @@ bool EnemyManager::IsValidSpawnPosition(float x, float z)
             if (m_pEnemy[i] == nullptr) continue;
 
             //活動している敵の座標を取得
-            DirectX::XMFLOAT3 OtherPos =  m_pEnemy[i]->GetEnemyPos();
+            DirectX::XMFLOAT3 OtherPos =  m_pEnemy[i]->GetPos();
 
             // 新しい生成位置と敵のX方向の距離
             float CheckX = x - OtherPos.x;
@@ -139,15 +144,17 @@ void EnemyManager::CreateEnemy(int slot, int spawnIndex)
     const  EnemySpawnPoint& point = m_spawnPoint[spawnIndex];
 
     m_pEnemy[slot] = new Enemy();
-
-    m_pEnemy[slot]->SetEnemyPos(point.x, 0.2f, point.z);
-
-    m_pEnemy[slot]->SetEnemyScale(0.45f, 0.45f, 0.45f);
-
+    m_pEnemy[slot]->SetEnemyCamera(m_pCamera);
+    if (!m_pEnemy[slot]->LoadEnemyFbx("Assets/Model/teki.fbx"))
+    {
+        delete m_pEnemy[slot];
+        m_pEnemy[slot] = nullptr;
+        return;
+    }
+    m_pEnemy[slot]->SetPos(point.x, 0.2f, point.z);
+    m_pEnemy[slot]->SetScale(0.20f, 0.20f, 0.20f);
     m_pEnemy[slot]->SetPlayerPos(g_player);
-
     m_pEnemy[slot]->SetEnemyList(m_pEnemy, MAX_ENEMY);
-
 
     m_activeSpawnIndex[slot] = spawnIndex;
 
@@ -285,6 +292,11 @@ void EnemyManager::UpdateEnemyPopulation()
 Enemy* const* EnemyManager::GetEnemies() const
 {
     return m_pEnemy;
+}
+
+void EnemyManager::SetEnemyCamera(Camera* camera)
+{
+    m_pCamera = camera;
 }
 
 void EnemyManager::DeadEnemy()
