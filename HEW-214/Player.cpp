@@ -97,6 +97,7 @@ void Player::Update()
 			m_stickDirX = moveX;
 			m_stickDirZ = moveZ;
 			m_arrowAngle = atan2f(moveX, moveZ);
+			m_rotation.y = atan2f(moveX, moveZ);
 			m_showArrow = true;
 
 			// RTを押した瞬間にダッシュ開始
