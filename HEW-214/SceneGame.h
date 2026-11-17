@@ -26,7 +26,6 @@ private:
 	Goal* m_pGoal;//ゴールオブジェクト
 	Camera* m_pCamera; //ゲーム中に動かすカメラ
 	Model* m_pModel;
-
 	Player* m_pPlayer;
 	EnemyManager* m_pEnemyManager;
 	CombatSystem* m_combatSystem;

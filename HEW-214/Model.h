@@ -14,10 +14,6 @@
 
 class Model
 {
-private:
-	DirectX::XMFLOAT3 m_pos;
-	DirectX::XMFLOAT3 m_scale;
-
 public:
 	// ƒ‚ƒfƒ‹”½“]İ’è
 	enum Flip
