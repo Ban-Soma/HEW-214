@@ -4,6 +4,7 @@
 #include "ShaderList.h"
 #include "Defines.h"
 #include <DirectXMath.h>
+#include<cmath>
 
 /// <summary>
 /// XMVECTORSET() 　x,y,z,wの値をセット
@@ -121,6 +122,16 @@ void Enemy::FollowingEnemy()
 
 	//プレイヤーの位置を取得
 	DirectX::XMFLOAT3 playerPos = g_pPlayer->GetPos();
+
+	//プレイヤーの方に向く計算
+	float dx = playerPos.x - m_pos.x;//ｘ方向に差
+	float dz = playerPos.z - m_pos.z;//ｚ方向に差
+	if (dx * dx + dz * dz)//二乗だから0.01以下なら更新しない
+	{
+		m_rotation.y = atan2f(dx, dz) ;
+	}
+		
+		
 
 	//プレイヤーへの方向計算
 	DirectX::XMVECTOR g_direction = DirectX::XMVectorSet(

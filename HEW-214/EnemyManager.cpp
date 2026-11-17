@@ -16,6 +16,9 @@
 //I—¹
 EnemyManager::~EnemyManager()
 {
+    for (int i = 0; i < MAX_ENEMY; i++) {
+        SAFE_DELETE(m_pEnemy[i]);
+    }
 }
 
 //‰Šú‰»
