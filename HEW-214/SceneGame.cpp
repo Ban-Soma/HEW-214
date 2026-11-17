@@ -32,7 +32,7 @@ SceneGame::SceneGame()
 
 	m_pPlayer = new Player();
 	m_pPlayer->LoadFbx("Assets/Model/hero 2.fbx");
-	m_pPlayer->SetPos(0.0f, 0.4f, 0.0f);
+	m_pPlayer->SetPos(0.0f, 0.2f, 0.0f);
 	m_pPlayer->SetScale(0.2f, 0.2f, 0.2f);
 	m_pPlayer->SetCamera(m_pCamera);
 
