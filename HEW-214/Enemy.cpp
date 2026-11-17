@@ -99,10 +99,10 @@ void Enemy::Draw()
 		//深度テストの有効化
 		SetDepthTest(DEPTH_ENABLE);
 	}
-	/*for (Bullet& bullet : m_bullets)
+	for (Bullet& bullet : m_bullets)
 	{
 		bullet.Draw();
-	}*/
+	}
 }
 
 void Enemy::SetPlayerPos(Player* pPlayer)
