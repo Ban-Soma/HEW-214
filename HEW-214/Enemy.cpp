@@ -18,7 +18,7 @@
 /// 
 /// 
 
-Player* g_pPlayer = new Player();
+static Player* g_pPlayer = nullptr;
 
 Enemy::Enemy()
 	: m_moveSpeed(0.02f)

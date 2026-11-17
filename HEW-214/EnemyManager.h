@@ -8,6 +8,8 @@ using namespace std;
 
 class Player;
 
+extern Player* g_player;
+
 //“G‚Ì¶¬ˆÊ’u‚ğ•Û‚·‚é
 
 struct   EnemySpawnPoint

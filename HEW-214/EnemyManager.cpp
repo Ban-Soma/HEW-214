@@ -3,7 +3,7 @@
 #include <cmath>　//計算標準ライブラリ
 #include <cstdlib>//乱数など
 
- extern Player* g_player = new Player;
+ Player* g_player = nullptr;
 
  EnemyManager::EnemyManager()
     :m_pEnemy{nullptr}
@@ -16,6 +16,7 @@
 //終了
 EnemyManager::~EnemyManager()
 {
+    
     for (int i = 0; i < MAX_ENEMY; i++) {
         SAFE_DELETE(m_pEnemy[i]);
     }

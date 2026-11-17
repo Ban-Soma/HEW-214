@@ -8,7 +8,6 @@
 
 //クラスの前方宣言　不要なヘッダのインクルードを減らせる。
 class Player;
-
 class Bullet;
 
 class Enemy : public GameObject  {
