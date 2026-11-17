@@ -1,11 +1,14 @@
 #pragma once
 #include "Enemy.h"
+#include "Camera.h"
 #include "Defines.h"
 #include <vector>
 
 using namespace std;
 
 class Player;
+
+extern Player* g_player;
 
 //敵の生成位置を保持する
 
@@ -18,6 +21,7 @@ struct   EnemySpawnPoint
 class EnemyManager{
 private:
 	Enemy* m_pEnemy[MAX_ENEMY];
+	Camera* m_pCamera;
 
 	//スポーン位置の保持
 	vector< EnemySpawnPoint> m_spawnPoint;
@@ -60,6 +64,9 @@ public:
 	void UpdateEnemyPopulation();
 	//敵配列の取得
 	Enemy* const* GetEnemies() const;
+
+	//カメラ
+	void SetEnemyCamera(Camera* camera);
 
 	//死亡した敵の処理
 	void DeadEnemy();

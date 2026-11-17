@@ -12,7 +12,7 @@ void CombatSystem::Update(Player& player, EnemyManager& enemyManager) {
 		
 		if (enemy == nullptr) continue;
 		if (!enemy->IsAlive())continue;
-		bool hit = CollisionManager::CheckCollision(player.GetPos(), player.GetScale(), enemy->GetEnemyPos(), enemy->GetEnemyScale());
+		bool hit = CollisionManager::CheckCollision(player.GetPos(), player.GetScale(), enemy->GetPos(), enemy->GetScale());
 			
 		if (!hit) continue;
 		enemy->TakeDamage(1);

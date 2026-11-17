@@ -10,11 +10,12 @@
 
 SceneGame::SceneGame()
 	:m_pGround(nullptr)
-	,m_pGoal(nullptr)
-	,m_pCamera(nullptr)
-	,m_pModel(nullptr)
-	,m_pPlayer(nullptr)
-	,m_pEnemyManager(nullptr)
+	, m_pGoal(nullptr)
+	, m_pCamera(nullptr)
+	, m_pModel(nullptr)
+	, m_pPlayer(nullptr)
+	, m_pEnemyManager(nullptr)
+	, m_combatSystem(nullptr)
 {
 	// —”‚Ì‰Šú‰»
 	srand((unsigned int)time(NULL));
@@ -31,11 +32,12 @@ SceneGame::SceneGame()
 
 	m_pPlayer = new Player();
 	m_pPlayer->LoadFbx("Assets/Model/hero 2.fbx");
-	m_pPlayer->SetPos(0.0f, 0.4f, 0.0f);
+	m_pPlayer->SetPos(0.0f, 0.2f, 0.0f);
 	m_pPlayer->SetScale(0.2f, 0.2f, 0.2f);
 	m_pPlayer->SetCamera(m_pCamera);
 
 	m_pEnemyManager = new EnemyManager();
+	m_pEnemyManager->SetEnemyCamera(m_pCamera);
 	m_pEnemyManager->InitEnemyManager(m_pPlayer);
 }
 
@@ -47,7 +49,6 @@ SceneGame::~SceneGame()
 	SAFE_DELETE(m_pCamera);
 	SAFE_DELETE(m_pGoal);
 	SAFE_DELETE(m_pGround);
-
 }
 
 void SceneGame::Update()
