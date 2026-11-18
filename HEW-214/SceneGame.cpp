@@ -78,6 +78,11 @@ void SceneGame::Update()
 	m_combatSystem->Update(*m_pPlayer, *m_pEnemyManager);
 	m_pEnemyManager->DeadEnemy();
 	m_pCamera->SetLook(m_pPlayer->GetPos());
+
+	if (GetAsyncKeyState(VK_F3) & 1)//F3で表示切替
+	{
+		m_debugInfo.ToggleVisible();
+	}
 	//デバッグ用数値の更新
 	m_debugInfo.Update();
 	

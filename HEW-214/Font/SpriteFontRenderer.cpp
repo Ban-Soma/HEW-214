@@ -226,6 +226,7 @@ void FinalizeSpriteFontRendererDX11()
     g_vertexCapacity = 0;
 }
 
+
 bool DrawTextMeshWithSpriteDX11(
     ID3D11DeviceContext* context,
     const TextMesh& mesh,
@@ -240,11 +241,25 @@ bool DrawTextMeshWithSpriteDX11(
     if (!context || !textureSRV || !mesh.IsValid() || !g_device)
         return false;
 
+    // =========================================
+    // 1. ビューポート取得
+    // =========================================
+
     UINT viewportCount = 1;
     D3D11_VIEWPORT viewport{};
+
     context->RSGetViewports(&viewportCount, &viewport);
-    if (viewportCount == 0 || viewport.Width <= 0.0f || viewport.Height <= 0.0f)
+
+    if (viewportCount == 0 ||
+        viewport.Width <= 0.0f ||
+        viewport.Height <= 0.0f)
+    {
         return false;
+    }
+
+    // =========================================
+    // 2. 文字の頂点データ生成
+    // =========================================
 
     std::vector<FontVertexDX11> vertices;
     vertices.reserve(mesh.indices.size());
@@ -255,46 +270,267 @@ bool DrawTextMeshWithSpriteDX11(
             return false;
 
         const TextVertex& v = mesh.vertices[index];
+
         const float px = v.x + offsetX;
         const float py = v.y + offsetY;
 
-        // Pixel coordinates (top-left origin) -> DirectX NDC.
-        const float ndcX = (px / viewport.Width) * 2.0f - 1.0f;
-        const float ndcY = 1.0f - (py / viewport.Height) * 2.0f;
+        const float ndcX =
+            (px / viewport.Width) * 2.0f - 1.0f;
 
-        vertices.push_back({ ndcX, ndcY, v.u, v.v, r, g, b, a });
+        const float ndcY =
+            1.0f - (py / viewport.Height) * 2.0f;
+
+        vertices.push_back({
+            ndcX,
+            ndcY,
+            v.u,
+            v.v,
+            r,
+            g,
+            b,
+            a
+            });
     }
 
-    if (!EnsureVertexBuffer(static_cast<UINT>(vertices.size())))
+    if (vertices.empty())
+        return true;
+
+    // =========================================
+    // 3. 頂点バッファ更新
+    // =========================================
+
+    if (!EnsureVertexBuffer(
+        static_cast<UINT>(vertices.size())))
+    {
         return false;
+    }
 
     D3D11_MAPPED_SUBRESOURCE mapped{};
-    if (FAILED(context->Map(g_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
-        return false;
 
-    std::memcpy(mapped.pData, vertices.data(), vertices.size() * sizeof(FontVertexDX11));
+    if (FAILED(context->Map(
+        g_vertexBuffer,
+        0,
+        D3D11_MAP_WRITE_DISCARD,
+        0,
+        &mapped)))
+    {
+        return false;
+    }
+
+    std::memcpy(
+        mapped.pData,
+        vertices.data(),
+        vertices.size() * sizeof(FontVertexDX11)
+    );
+
     context->Unmap(g_vertexBuffer, 0);
+
+    // =========================================
+    // 4. 現在の描画ステートを保存
+    // =========================================
+
+    // Input Assembler
+    ID3D11InputLayout* oldLayout = nullptr;
+    ID3D11Buffer* oldVertexBuffer = nullptr;
+
+    UINT oldStride = 0;
+    UINT oldOffset = 0;
+
+    D3D11_PRIMITIVE_TOPOLOGY oldTopology =
+        D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
+
+    context->IAGetInputLayout(&oldLayout);
+
+    context->IAGetVertexBuffers(
+        0, 1,
+        &oldVertexBuffer,
+        &oldStride,
+        &oldOffset
+    );
+
+    context->IAGetPrimitiveTopology(&oldTopology);
+
+    // Shaders
+    ID3D11VertexShader* oldVS = nullptr;
+    ID3D11PixelShader* oldPS = nullptr;
+    ID3D11GeometryShader* oldGS = nullptr;
+    ID3D11HullShader* oldHS = nullptr;
+    ID3D11DomainShader* oldDS = nullptr;
+
+    context->VSGetShader(&oldVS, nullptr, nullptr);
+    context->PSGetShader(&oldPS, nullptr, nullptr);
+    context->GSGetShader(&oldGS, nullptr, nullptr);
+    context->HSGetShader(&oldHS, nullptr, nullptr);
+    context->DSGetShader(&oldDS, nullptr, nullptr);
+
+    // Pixel Shader Resources
+    ID3D11ShaderResourceView* oldSRV = nullptr;
+    ID3D11SamplerState* oldSampler = nullptr;
+
+    context->PSGetShaderResources(
+        0, 1, &oldSRV
+    );
+
+    context->PSGetSamplers(
+        0, 1, &oldSampler
+    );
+
+    // Blend State
+    ID3D11BlendState* oldBlend = nullptr;
+
+    FLOAT oldBlendFactor[4] = {};
+    UINT oldSampleMask = 0;
+
+    context->OMGetBlendState(
+        &oldBlend,
+        oldBlendFactor,
+        &oldSampleMask
+    );
+
+    // Depth Stencil State
+    ID3D11DepthStencilState* oldDepth = nullptr;
+    UINT oldStencilRef = 0;
+
+    context->OMGetDepthStencilState(
+        &oldDepth,
+        &oldStencilRef
+    );
+
+    // Rasterizer State
+    ID3D11RasterizerState* oldRasterizer = nullptr;
+
+    context->RSGetState(&oldRasterizer);
+
+    // =========================================
+    // 5. フォント描画用ステートを設定
+    // =========================================
 
     UINT stride = sizeof(FontVertexDX11);
     UINT offset = 0;
+
     context->IASetInputLayout(g_layout);
-    context->IASetVertexBuffers(0, 1, &g_vertexBuffer, &stride, &offset);
-    context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    context->IASetVertexBuffers(
+        0, 1,
+        &g_vertexBuffer,
+        &stride,
+        &offset
+    );
+
+    context->IASetPrimitiveTopology(
+        D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST
+    );
 
     context->VSSetShader(g_vs, nullptr, 0);
     context->PSSetShader(g_ps, nullptr, 0);
-    context->PSSetShaderResources(0, 1, &textureSRV);
-    context->PSSetSamplers(0, 1, &g_sampler);
 
-    const float blendFactor[4] = { 0, 0, 0, 0 };
-    context->OMSetBlendState(g_blend, blendFactor, 0xffffffff);
-    context->OMSetDepthStencilState(g_depthState, 0);
+    // フォント描画では使用しないステージを無効化
+    context->GSSetShader(nullptr, nullptr, 0);
+    context->HSSetShader(nullptr, nullptr, 0);
+    context->DSSetShader(nullptr, nullptr, 0);
+
+    context->PSSetShaderResources(
+        0, 1, &textureSRV
+    );
+
+    context->PSSetSamplers(
+        0, 1, &g_sampler
+    );
+
+    const FLOAT blendFactor[4] =
+    {
+        0.0f, 0.0f, 0.0f, 0.0f
+    };
+
+    context->OMSetBlendState(
+        g_blend,
+        blendFactor,
+        0xffffffff
+    );
+
+    context->OMSetDepthStencilState(
+        g_depthState,
+        0
+    );
+
     context->RSSetState(g_rasterizer);
 
-    context->Draw(static_cast<UINT>(vertices.size()), 0);
+    // =========================================
+    // 6. 文字描画
+    // =========================================
 
-    // Avoid keeping the atlas SRV bound if caller wants to update/recreate it later.
-    ID3D11ShaderResourceView* nullSRV = nullptr;
-    context->PSSetShaderResources(0, 1, &nullSRV);
+    context->Draw(
+        static_cast<UINT>(vertices.size()),
+        0
+    );
+
+    // =========================================
+    // 7. 描画ステートを元に戻す
+    // =========================================
+
+    // Input Assembler
+    context->IASetInputLayout(oldLayout);
+
+    context->IASetVertexBuffers(
+        0, 1,
+        &oldVertexBuffer,
+        &oldStride,
+        &oldOffset
+    );
+
+    context->IASetPrimitiveTopology(oldTopology);
+
+    // Shaders
+    context->VSSetShader(oldVS, nullptr, 0);
+    context->PSSetShader(oldPS, nullptr, 0);
+    context->GSSetShader(oldGS, nullptr, 0);
+    context->HSSetShader(oldHS, nullptr, 0);
+    context->DSSetShader(oldDS, nullptr, 0);
+
+    // Shader Resources
+    context->PSSetShaderResources(
+        0, 1, &oldSRV
+    );
+
+    context->PSSetSamplers(
+        0, 1, &oldSampler
+    );
+
+    // Blend
+    context->OMSetBlendState(
+        oldBlend,
+        oldBlendFactor,
+        oldSampleMask
+    );
+
+    // Depth
+    context->OMSetDepthStencilState(
+        oldDepth,
+        oldStencilRef
+    );
+
+    // Rasterizer
+    context->RSSetState(oldRasterizer);
+
+    // =========================================
+    // 8. 取得した参照を解放
+    // =========================================
+
+    SafeRelease(oldLayout);
+    SafeRelease(oldVertexBuffer);
+
+    SafeRelease(oldVS);
+    SafeRelease(oldPS);
+    SafeRelease(oldGS);
+    SafeRelease(oldHS);
+    SafeRelease(oldDS);
+
+    SafeRelease(oldSRV);
+    SafeRelease(oldSampler);
+
+    SafeRelease(oldBlend);
+    SafeRelease(oldDepth);
+    SafeRelease(oldRasterizer);
+
     return true;
 }
