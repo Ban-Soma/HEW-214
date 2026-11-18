@@ -11,18 +11,32 @@ class Enemy;
 
 
 class Player : public GameObject {
+public:
+	// プレイヤーの状態
+	enum State {
+		IDLE,   // 待機
+		MOVE,   // 通常移動
+		DASH,   // ダッシュ
+		DAMAGE, // 被弾
+		STUN,   // 行動不能(エネルギー切れなど？)
+		DEAD,   // 死亡
+	};
+
 private:
+	State m_state; // 現在の状態
+
 	Model* m_pModel;
+
 	//DirectX::XMFLOAT3 m_pos;//座標
 	//DirectX::XMFLOAT3  m_scale;//拡大率
 	// ダッシュ用
-	bool m_isDashing;     // ダッシュ中か判定
 	float m_dashDirX;      // 移動方向X
 	float m_dashDirZ;      // 移動方向Z
 	float m_dashDistance;  // ダッシュ距離
 	float m_dashSpeed;    // 1フレームの移動量
 	float m_dashRemaining; // 残りの移動距離
 	bool m_prevRT;        // 前フレームRT入力状態
+	bool m_nowRT;         // RTボタンが押されているか
 
 	//矢印
 	float m_arrowAngle;  //矢印の回転速度
@@ -53,4 +67,17 @@ public:
 
 	bool LoadFbx(const char* file);
 
+	// 状態の設定
+	void SetState(State state);
+	// 状態の取得
+	State GetState();
+
+private:
+	// 状態別の更新処理
+	void UpdateIdle();
+	void UpdateMove();
+	void UpdateDash();
+	void UpdateDamage();
+	void UpdateStun();
+	void UpdateDead();
 };

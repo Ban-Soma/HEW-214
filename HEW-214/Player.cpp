@@ -17,14 +17,15 @@
 Player::Player()
     //モデル描画
 	:m_pModel(nullptr)
+	,m_state(State::IDLE)
 	// ダッシュ用
-	,m_isDashing(false)  // ダッシュ中か判定
-	,m_dashDirX (0.0f)      // 移動方向X
+	,m_dashDirX (0.0f)     // 移動方向X
 	,m_dashDirZ(0.0f)      // 移動方向Z
 	,m_dashDistance(3.0f)  // ダッシュ距離
 	,m_dashSpeed (0.3f)    // 1フレームの移動量
 	,m_dashRemaining(0.0f) // 残りの移動距離
-	,m_prevRT (false)// 前フレームRT入力状態
+	,m_prevRT (false)      // 前フレームRT入力状態
+	,m_nowRT(false)        // RTを押しているか 
 	//矢印表示
 	,m_arrowAngle(0.0f)
 	,m_stickDirX(0.0f)
@@ -56,8 +57,9 @@ void Player::Update()
 	// コントローラーの入力情報を格納する構造体
 	XINPUT_STATE state{};
 
-	// 現在RTボタンが押されているか
-	bool nowRT = false;
+	// 入力状態を初期化
+	m_nowRT = false;
+	m_showArrow = false;
 
 	if (XInputGetState(0, &state) == ERROR_SUCCESS)
 	{
@@ -71,11 +73,7 @@ void Player::Update()
 		float moveX = 0.0f;
 		float moveZ = 0.0f;
 
-		if (length < 0.2f)
-		{
-			m_showArrow = false;
-		}
-		else if (m_pCamera)
+		if (length >= 0.2f && m_pCamera)
 		{
 			// 入力方向を単位化
 			x /= length;z /= length;
@@ -98,48 +96,26 @@ void Player::Update()
 			m_stickDirZ = moveZ;
 			m_arrowAngle = atan2f(moveX, moveZ);
 			m_rotation.y = atan2f(moveX, moveZ);
-			m_showArrow = true;
-
-			// RTを押した瞬間にダッシュ開始
-			nowRT = state.Gamepad.bRightTrigger > 30;
-
-			if (nowRT && !m_prevRT && !m_isDashing)
-			{
-				m_isDashing = true;
-				m_dashDirX = moveX;
-				m_dashDirZ = moveZ;
-				m_dashRemaining = m_dashDistance;
-			}
-		}
-		else
-		{
-			// カメラ未設定時は矢印を表示しない
-			m_showArrow = false;
+			m_showArrow = true;	
 		}
 
 		// スティックがデッドゾーン内でもRT状態を記録する
-		nowRT = state.Gamepad.bRightTrigger > 30;
+		m_nowRT = state.Gamepad.bRightTrigger > 30;
 	}
 
-	m_prevRT = nowRT;
-
-	// ダッシュ中
-	if (m_isDashing)
+	// ステート別の更新処理
+	switch (m_state)
 	{
-		float move = std::min(m_dashSpeed, m_dashRemaining);
-
-		m_pos.x += m_dashDirX * move;
-		m_pos.z += m_dashDirZ * move;
-
-		m_dashRemaining -= move;
-
-		// ダッシュ終了
-		if (m_dashRemaining <= 0.0f)
-		{
-			m_dashRemaining = 0.0f;
-			m_isDashing = false;
-		}
+	case State::IDLE  : UpdateIdle(); break;
+	case State::MOVE  : UpdateMove(); break;
+	case State::DASH  : UpdateDash(); break;
+	case State::DAMAGE: UpdateDash(); break;
+	case State::STUN  : UpdateDash(); break;
+	case State::DEAD  : UpdateDash(); break;
 	}
+
+	// 前フレームのRT入力状態を取得
+	m_prevRT = m_nowRT;
 }
 
 void Player::Draw()
@@ -264,6 +240,103 @@ bool Player::LoadFbx(const char* file)
 		m_pModel = new Model();
 	}
 	return m_pModel->Load(file, 0.5f);
+}
+
+void Player::SetState(State state)
+{
+	m_state = state;
+}
+
+Player::State Player::GetState()
+{
+	return m_state;
+}
+
+// 待機状態
+void Player::UpdateIdle()
+{
+	// スティック入力がある場合
+	if(m_showArrow)
+	{
+		// RTを押した瞬間
+		if (m_nowRT && !m_prevRT)
+		{
+			m_dashDirX = m_stickDirX;
+			m_dashDirZ = m_stickDirZ;
+			m_dashRemaining = m_dashDistance;
+
+			SetState(State::DASH);
+		}
+		else
+		{
+			SetState(State::MOVE);
+		}
+	}
+}
+
+// 通常移動
+void Player::UpdateMove()
+{
+	
+	// スティック入力がなくなったら待機
+	if (!m_showArrow)
+	{
+		SetState(State::IDLE);
+		return;
+	}
+
+	// RT押した瞬間にダッシュ開始
+	if (m_nowRT && !m_prevRT)
+	{
+		m_dashDirX = m_stickDirX;
+		m_dashDirZ = m_stickDirZ;
+		m_dashRemaining = m_dashDistance;
+
+		SetState(State::DASH);
+	}
+}
+
+// ダッシュ
+void Player::UpdateDash()
+{
+	// ダッシュ中の移動量
+	float move = std::min(m_dashSpeed, m_dashRemaining);
+
+	m_pos.x += m_dashDirX * move;
+	m_pos.z += m_dashDirZ * move;
+
+	m_dashRemaining -= move;
+
+	// ダッシュ終了
+	if (m_dashRemaining <= 0.0f)
+	{
+		m_dashRemaining = 0.0f;
+		
+		// スティック入力がある場合
+		if (m_showArrow)
+		{
+			SetState(State::MOVE);
+		}
+		else
+		{
+			SetState(State::IDLE);
+		}
+	}
+}
+
+// 被弾
+void Player::UpdateDamage()
+{
+}
+
+// 行動不可
+void Player::UpdateStun()
+{
+}
+
+// 死亡
+void Player::UpdateDead()
+{
 }
 
 
