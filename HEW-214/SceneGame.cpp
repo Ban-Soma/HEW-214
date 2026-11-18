@@ -46,6 +46,7 @@ SceneGame::SceneGame()
 	m_debugInfo.Initialize(device, context, "Assets/Fonts/APJapanesefont.ttf");
 	m_debugInfo.RegisterPlayer(m_pPlayer);
 	m_debugInfo.RegisterEnemyManager(m_pEnemyManager);
+	m_debugInfo.RegisterEnergy(m_pPlayer->GetEnergy());
 	
 	
 }

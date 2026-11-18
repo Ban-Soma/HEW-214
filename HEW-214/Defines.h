@@ -34,4 +34,9 @@ static const float	DEBUG_GRID_MARGIN	= METER(1.0f);	// グリッド配置幅
 
 #define MAX_ENEMY (20) //最大敵数
 
+//エネルギー
+static constexpr float MAX_ENERGY = 100.0f;
+static constexpr float DASH_COST = 50.0f;
+static constexpr float KILL_RECOVERY = 50.0f;
+static constexpr float OVERHEAT_TIME = 3.0f;
 #endif // __DEFINES_H__

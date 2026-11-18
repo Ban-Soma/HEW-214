@@ -32,19 +32,25 @@ Player::Player()
 	,m_showArrow(false)
 	//カメラ
 	,m_pCamera(nullptr)
-
 {
-
+	m_pEnergy = new Energy;
 }
 
 Player::~Player()
 {
 	SAFE_DELETE(m_pModel);
+	SAFE_DELETE(m_pEnergy);
 }
 
 void Player::Update()
 {
 	const float MoveSpeed = 0.05f;
+
+	//仮の経過時間(60FPS想定)
+	//後で実際のdeltaTimeni置き換える
+	const float deltaTime = 1.0f / 60.0f;
+	m_pEnergy->Update(deltaTime);
+
 
 	// キーボード移動（現状どおりワールド座標基準）
 	if (IsKeyPress('W')) { m_pos.z += MoveSpeed; }
@@ -58,6 +64,8 @@ void Player::Update()
 
 	// 現在RTボタンが押されているか
 	bool nowRT = false;
+	
+	
 
 	if (XInputGetState(0, &state) == ERROR_SUCCESS)
 	{
@@ -104,13 +112,17 @@ void Player::Update()
 
 			// RTを押した瞬間にダッシュ開始
 			nowRT = state.Gamepad.bRightTrigger > 30;
-
+			
 			if (nowRT && !m_prevRT && !m_isDashing)
 			{
-				m_isDashing = true;
-				m_dashDirX = moveX;
-				m_dashDirZ = moveZ;
-				m_dashRemaining = m_dashDistance;
+				if (m_pEnergy->ConsumeDash())
+				{
+
+					m_isDashing = true;
+					m_dashDirX = moveX;
+					m_dashDirZ = moveZ;
+					m_dashRemaining = m_dashDistance;
+				}
 			}
 		}
 		else
@@ -140,6 +152,8 @@ void Player::Update()
 		{
 			m_dashRemaining = 0.0f;
 			m_isDashing = false;
+			//終了時エネルギーが０ならオーバーヒート
+			m_pEnergy->OnDashEnd();
 		}
 	}
 
@@ -269,6 +283,11 @@ bool Player::LoadFbx(const char* file)
 		m_pModel = new Model();
 	}
 	return m_pModel->Load(file, 0.5f);
+}
+
+Energy* Player::GetEnergy()
+{
+	return m_pEnergy;
 }
 
 

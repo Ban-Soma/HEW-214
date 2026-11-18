@@ -11,6 +11,7 @@
 #include "CombatSystem.h"
 #include "Defines.h"
 #include "DebugInfo.h"
+#include "Energy.h"
 
 class SceneGame : public Scene
 {

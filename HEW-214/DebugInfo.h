@@ -7,11 +7,10 @@
 #include <memory>
 #include <string>
 #include <chrono>
-#include "Player.h"
-#include "EnemyManager.h"
 
 class Player;
 class EnemyManager;
+class Energy;
 // デバッグ表示する情報
 struct DebugValues
 {
@@ -34,10 +33,11 @@ class DebugInfo
 {
 public:
     bool Initialize(ID3D11Device* device,ID3D11DeviceContext* context,const std::string& fontPath);
-
+    //新規登録はこちらから
     void RegisterPlayer(Player* player);
     void RegisterEnemyManager(EnemyManager* manager);
-
+    void RegisterEnergy(Energy* energy);
+    //=============================================
     void Update();
     void Draw();
     void Finalize();

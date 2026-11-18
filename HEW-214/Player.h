@@ -4,7 +4,7 @@
 #include"PlayerTrajectory.h"
 #include "Model.h"
 #include "Camera.h"
-
+#include "Energy.h"
 
 
 
@@ -38,6 +38,7 @@ private:
 	//カメラ
 	Camera* m_pCamera; //カメラ
 
+	Energy* m_pEnergy;
 public:
 	Player();
 	~Player();
@@ -54,4 +55,5 @@ public:
 
 	bool LoadFbx(const char* file);
 
+	Energy* GetEnergy();
 };

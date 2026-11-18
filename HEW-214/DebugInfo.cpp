@@ -2,12 +2,13 @@
 #include "DebugInfo.h"
 #include "Player.h"
 #include "EnemyManager.h"
+#include "Energy.h"
 #include <sstream>
 #include <iomanip>
 
 extern Player* g_InfoPlayer = new Player;
 extern EnemyManager* g_InfoEnemyManager = new EnemyManager;
-
+extern Energy* g_InfoEnergy = new Energy;
 void DebugInfo::RegisterPlayer(Player* player)
 {
     g_InfoPlayer = player;
@@ -16,6 +17,10 @@ void DebugInfo::RegisterPlayer(Player* player)
 void DebugInfo::RegisterEnemyManager(EnemyManager* manager)
 {
     g_InfoEnemyManager = manager;
+}
+void DebugInfo::RegisterEnergy(Energy* energy)
+{
+    g_InfoEnergy = energy;
 }
 bool DebugInfo::Initialize(ID3D11Device* device,ID3D11DeviceContext* context,const std::string& fontPath)
 {
@@ -53,7 +58,7 @@ void DebugInfo::Update()
     values.playerY = SavePos.y;
     values.playerZ = SavePos.z;
 
-
+    values.energy = g_InfoEnergy->GetEnergy();
 
 
     //‚±‚±‚Ü‚Å‚Ì”ÍˆÍ“à‚É•ÏX‚·‚é’l‚ğ“ü—Í‚·‚é
