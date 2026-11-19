@@ -10,6 +10,9 @@
 #include "EnemyManager.h"
 #include "CombatSystem.h"
 #include "Defines.h"
+#include "DebugInfo.h"
+#include "Energy.h"
+
 class SceneGame : public Scene
 {
 public:
@@ -24,10 +27,12 @@ private:
 	Goal* m_pGoal;//ゴールオブジェクト
 	Camera* m_pCamera; //ゲーム中に動かすカメラ
 	Model* m_pModel;
-
 	Player* m_pPlayer;
 	EnemyManager* m_pEnemyManager;
 	CombatSystem* m_combatSystem;
+
+	DebugInfo m_debugInfo; // デバッグ情報表示用
+	DebugValues m_debugValues; // デバッグ情報の値
 };
 
 #endif // __SCENE_GAME_H__
