@@ -1,10 +1,10 @@
 #pragma once
-
+#include "Texture.h"
 class Ground {
 private:
 	float m_pos[3];//À•W
 	float m_scale[3];//Šg‘å—¦
-
+	Texture* m_pTexture;
 public:
 	Ground();
 	~Ground();
