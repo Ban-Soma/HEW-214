@@ -127,7 +127,7 @@ void Player::Update()
 	// 前フレームのRT入力状態を取得
 	m_prevRT = m_nowRT;
 	
-	m_trajectory->AddPoint(m_pos);
+	
 }
 
 void Player::Draw()
@@ -277,6 +277,7 @@ void Player::UpdateIdle()
 			m_dashDirZ = m_stickDirZ;
 			m_dashRemaining = m_dashDistance;
 			m_pEnergy->ConsumeDash();
+			m_trajectory->AddPoint(m_pos);
 			SetState(State::DASH);
 		}
 		else
@@ -304,6 +305,7 @@ void Player::UpdateMove()
 		m_dashDirZ = m_stickDirZ;
 		m_dashRemaining = m_dashDistance;
 		m_pEnergy->ConsumeDash();
+		m_trajectory->AddPoint(m_pos);
 		SetState(State::DASH);
 	}
 }
@@ -324,6 +326,7 @@ void Player::UpdateDash()
 	{
 		m_dashRemaining = 0.0f;
 		m_pEnergy->OnDashEnd();
+		m_trajectory->AddPoint(m_pos);
 		// スティック入力がある場合
 		if (m_showArrow)
 		{

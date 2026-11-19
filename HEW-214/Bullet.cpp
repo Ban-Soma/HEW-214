@@ -5,7 +5,7 @@ Bullet::Bullet()
 	: m_pos{ 0.0f,0.0f,0.0f }
 	, m_scale{ 0.2f,0.2f,0.2f }
 	, m_direction{ 0.0f,0.0f,0.0f }
-	, m_speed(0.1f)
+	, m_speed(0.05f)
 	, m_life(300)
 {
 }
@@ -15,7 +15,7 @@ Bullet::Bullet(DirectX::XMFLOAT3 pos,
 	: m_pos(pos)
 	, m_scale{ 0.2f,0.2f,0.2f }
 	, m_direction(direction)
-	, m_speed(0.01f)
+	, m_speed(0.05f)
 	, m_life(300)
 {
 
@@ -23,7 +23,7 @@ Bullet::Bullet(DirectX::XMFLOAT3 pos,
 
 Bullet::~Bullet()
 {
-
+	
 }
 
 void Bullet::Update()

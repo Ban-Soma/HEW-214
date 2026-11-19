@@ -13,7 +13,20 @@ class Player;
 
 
 class Enemy : public GameObject  {
+public:
+	// プレイヤーの状態
+	enum State {
+		IDLE,   // 待機
+		MOVE,   // 移動
+		ATACK,  // 攻撃
+		DAMAGE, // 被弾
+		STUN,   // 行動不能(エネルギー切れなど？)
+		DEAD,   // 死亡
+		DEADEND,//完全死亡
+	};
+
 private:
+	State m_State;
 	Enemy** m_pEnemy;
 	Camera* m_pCamera;
 	Model* m_pModel;
@@ -28,6 +41,7 @@ private:
 	int m_EnemyCount; //フィールドに生成されてる敵の数
 	int m_EnemyLife; //敵のHP
 
+	float m_DeadTimer;
 public:
 	//コンストラクタ
 	Enemy();
@@ -60,4 +74,18 @@ public:
 	void SetEnemyCamera(Camera* camera);
 	bool LoadEnemyFbx(const char* file);
 	
+
+	// 状態の設定
+	void SetState(State state);
+	// 状態の取得
+	State GetState();
+private:
+	// 状態別の更新処理
+	void UpdateIdle();
+	void UpdateMove();
+	void UpdateAtack();
+	void UpdateDamage();
+	void UpdateStun();
+	void UpdateDead();
+	void UpdateDeadEnd();
 };
