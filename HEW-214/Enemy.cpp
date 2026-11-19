@@ -28,7 +28,7 @@ Enemy::Enemy()
 	, m_pModel(nullptr)
 	, m_pCamera(nullptr)
 	, m_shotTimer(0)
-	, m_shotInterval(60)
+	, m_shotInterval(120)
 	, m_State(IDLE)
 	, m_DeadTimer(0.0f)
 {
@@ -57,16 +57,6 @@ void Enemy::Update()
 		if (!bullet.IsAlive())continue;
 			bullet.Update();
 	}	
-
-	//FollowingEnemy();
-
-	////Shoot();
-
-	//for (Bullet& bullet : m_bullets)
-	//{
-	//	bullet.Update();
-	//}
-
 }
 void Enemy::UpdateIdle()
 {
@@ -94,6 +84,10 @@ void Enemy::UpdateIdle()
 	{
 		SetState(MOVE);
 	}
+	else if (g_distance < MIN_DISTANCE)
+	{
+		SetState(ATACK);
+	}
 }
 void Enemy::UpdateMove()
 {
@@ -118,7 +112,8 @@ void Enemy::UpdateDead()
 	{
 		m_rotation.z = atan2f(m_DeadTimer*60, m_DeadTimer*60);
 	}
-	if (m_DeadTimer >= 120)
+	m_pos.y -= m_DeadTimer*0.001f;
+	if (m_DeadTimer >= 60)
 		SetState(DEADEND);
 	
 
@@ -239,12 +234,13 @@ void Enemy::FollowingEnemy()
 	{
 		SetState(IDLE);
 	}
-	else SetState(ATACK);
-
-
+	if (g_distance <= MAX_DISTANCE / 2)
+	{
+		SetState(ATACK);
+	}
 
 	bool bOverlap = false;
-	const float fMinDistance = 0.5f;
+	const float fMinDistance = 0.75f;
 	//’Ç]’†‚Ì“G“¯Žm‚ªd‚È‚ç‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß‚Ìˆ— 
 	if (m_pEnemy != nullptr) {
 		for (int i = 0; i < m_EnemyCount; i++) {
@@ -303,15 +299,16 @@ void Enemy::Shoot()
 	);
 
 	// ŽËŒ‚‚·‚é‹——£
-	const float shootDistance = 2.0f;
+	const float shootDistance = 4.0f;
 
 	// ‹——£‚ªshootDistance‚æ‚è‰“‚¯‚ê‚ÎŽËŒ‚‚µ‚È‚¢
 	if (distance > shootDistance)
 	{
 		m_shotTimer = 0;
-		SetState(IDLE);
+		SetState(MOVE);
 		return;
 	}
+
 
 	// ”­ŽËŠÔŠu‚ðƒJƒEƒ“ƒg
 	m_shotTimer++;
