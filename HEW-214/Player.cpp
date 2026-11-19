@@ -64,9 +64,6 @@ void Player::Update()
 	// Xboxコントローラー
 	// コントローラーの入力情報を格納する構造体
 	XINPUT_STATE state{};
-	//コントローラーのバイブレーション
-	XINPUT_VIBRATION vibration;
-	ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
 
 	// 入力状態を初期化
 	m_nowRT = false;
@@ -87,17 +84,17 @@ void Player::Update()
 		if (length >= 0.2f && m_pCamera)
 		{
 			// 入力方向を単位化
-			x /= length;z /= length;
+			x /= length; z /= length;
 
 			// カメラからプレイヤーに向かう水平前方向を求める
 			DirectX::XMFLOAT3 camPos = m_pCamera->GetPos();
-			DirectX::XMVECTOR vForward = DirectX::XMVectorSet(m_pos.x - camPos.x,0.0f,m_pos.z - camPos.z,0.0f);
+			DirectX::XMVECTOR vForward = DirectX::XMVectorSet(m_pos.x - camPos.x, 0.0f, m_pos.z - camPos.z, 0.0f);
 			vForward = DirectX::XMVector3Normalize(vForward);
 			DirectX::XMFLOAT3 forward;
 			DirectX::XMStoreFloat3(&forward, vForward);
 
 			// 水平右方向
-			DirectX::XMFLOAT3 right{forward.z,0.0f,-forward.x};
+			DirectX::XMFLOAT3 right{ forward.z,0.0f,-forward.x };
 
 			// スティック入力をワールド座標の移動方向に変換
 			moveX = right.x * x + forward.x * z;
@@ -109,7 +106,7 @@ void Player::Update()
 			m_arrowAngle = atan2f(moveX, moveZ);
 			//プレイヤの回転
 			m_rotation.y = atan2f(moveX, moveZ);
-			m_showArrow = true;	
+			m_showArrow = true;
 		}
 
 		// スティックがデッドゾーン内でもRT状態を記録する
@@ -119,45 +116,17 @@ void Player::Update()
 	// ステート別の更新処理
 	switch (m_state)
 	{
-	case State::IDLE  : UpdateIdle(); break;
-	case State::MOVE  : UpdateMove(); break;
-	case State::DASH  : UpdateDash(); break;
+	case State::IDLE: UpdateIdle(); break;
+	case State::MOVE: UpdateMove(); break;
+	case State::DASH: UpdateDash(); break;
 	case State::DAMAGE: UpdateDash(); break;
-	case State::STUN  : UpdateDash(); break;
-	case State::DEAD  : UpdateDash(); break;
+	case State::STUN: UpdateDash(); break;
+	case State::DEAD: UpdateDash(); break;
 	}
 
-		m_pos.x += m_dashDirX * move;
-		m_pos.z += m_dashDirZ * move;
-
-		m_dashRemaining -= move;
-
-		// ダッシュ終了
-		if (m_dashRemaining <= 0.0f)
-		{
-			m_dashRemaining = 0.0f;
-			m_isDashing = false;
-		}
-	}
-
-	//コントローラーのバイブレーション判定
-	if (nowRT == false)
-	{
-		// 左モーター(低周波)を50%
-		vibration.wLeftMotorSpeed = 32767;
-		// 右モーター(高周波)を100%
-		vibration.wRightMotorSpeed = 32767;
-		// コントローラー0番に送信
-		XInputSetState(0, &vibration);
-	}
-	else if(nowRT == true)
-	{
-		XInputSetState(0, &vibration);
-	}
-}
 	// 前フレームのRT入力状態を取得
 	m_prevRT = m_nowRT;
-	
+
 	m_trajectory->AddPoint(m_pos);
 }
 
@@ -222,9 +191,9 @@ void Player::DrawArrow()
 	//矢印の読み込み
 	 // 矢印を構成するパーツの描画
 	auto DrawArrowPart = [&](float x, float z,
-							 float scaleX, float scaleZ,
-							 float angle) 
-	{
+		float scaleX, float scaleZ,
+		float angle)
+		{
 			DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scaleX, 0.025f, scaleZ);
 			DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(x, 0.0f, z);
 			DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(m_arrowAngle + angle);
@@ -236,7 +205,7 @@ void Player::DrawArrow()
 
 			Geometory::SetWorld(fMat);
 			Geometory::DrawBox();
-	};
+		};
 
 	// 矢印の棒部分
 	DrawArrowPart(0.0f, 0.20f, 0.04f, 0.35f, 0.0f);
@@ -246,27 +215,27 @@ int Player::HitPlayer(Enemy** Enemys)
 {
 	DirectX::XMFLOAT3 PlayerPos = GetPos();
 	DirectX::XMFLOAT3 PlayerScale = GetScale();
-	
-		for (int i = 0; i < MAX_ENEMY; i++) {
-        // 関数宣言もスペル修正
-			if (&Enemys[i] == nullptr) { continue; }
 
-			DirectX::XMFLOAT3 EnemyPos = Enemys[i]->GetPos();
-			DirectX::XMFLOAT3 EnemyScale= Enemys[i]->GetScale();
+	for (int i = 0; i < MAX_ENEMY; i++) {
+		// 関数宣言もスペル修正
+		if (&Enemys[i] == nullptr) { continue; }
 
-			//敵とプレイヤーとの距離計算
-			float DistanceX = PlayerPos.x - EnemyPos.x;
-			float DistanceZ = PlayerPos.z - EnemyPos.z;
+		DirectX::XMFLOAT3 EnemyPos = Enemys[i]->GetPos();
+		DirectX::XMFLOAT3 EnemyScale = Enemys[i]->GetScale();
 
-			//幅を半分ずつ足した距離を接触の境界にする処理
-			float limitX = (PlayerScale.x + EnemyScale.x) * 0.5;
-			float limitZ = (PlayerScale.z + EnemyScale.z) * 0.5;
+		//敵とプレイヤーとの距離計算
+		float DistanceX = PlayerPos.x - EnemyPos.x;
+		float DistanceZ = PlayerPos.z - EnemyPos.z;
 
-			if (DistanceX * DistanceX + DistanceZ * DistanceZ < limitX * limitX + limitZ * limitZ) {
-				return i;
-			}
+		//幅を半分ずつ足した距離を接触の境界にする処理
+		float limitX = (PlayerScale.x + EnemyScale.x) * 0.5;
+		float limitZ = (PlayerScale.z + EnemyScale.z) * 0.5;
+
+		if (DistanceX * DistanceX + DistanceZ * DistanceZ < limitX * limitX + limitZ * limitZ) {
+			return i;
 		}
-	
+	}
+
 	//最後まで見つからなかったら-1
 	return -1;
 }
@@ -299,7 +268,7 @@ Player::State Player::GetState()
 void Player::UpdateIdle()
 {
 	// スティック入力がある場合
-	if(m_showArrow)
+	if (m_showArrow)
 	{
 		// RTを押した瞬間
 		if (m_nowRT && !m_prevRT)
@@ -320,7 +289,7 @@ void Player::UpdateIdle()
 // 通常移動
 void Player::UpdateMove()
 {
-	
+
 	// スティック入力がなくなったら待機
 	if (!m_showArrow)
 	{
@@ -329,7 +298,7 @@ void Player::UpdateMove()
 	}
 
 	// RT押した瞬間にダッシュ開始
-	if (m_nowRT && !m_prevRT&&!m_pEnergy->IsOverheated())
+	if (m_nowRT && !m_prevRT && !m_pEnergy->IsOverheated())
 	{
 		m_dashDirX = m_stickDirX;
 		m_dashDirZ = m_stickDirZ;
