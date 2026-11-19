@@ -3,8 +3,9 @@
 #include <GameObject.h>
 #include"PlayerTrajectory.h"
 #include "Model.h"
-
 #include "Camera.h"
+
+
 
 
 class Enemy;
@@ -12,68 +13,68 @@ class Enemy;
 
 class Player : public GameObject {
 public:
-	// ƒvƒŒƒCƒ„[‚Ìó‘Ô
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çŠ¶æ…‹
 	enum State {
-		IDLE,   // ‘Ò‹@
-		MOVE,   // ’ÊíˆÚ“®
-		DASH,   // ƒ_ƒbƒVƒ…
-		DAMAGE, // ”í’e
-		STUN,   // s“®•s”\(ƒGƒlƒ‹ƒM[Ø‚ê‚È‚ÇH)
-		DEAD,   // €–S
+		IDLE,   // å¾…æ©Ÿ
+		MOVE,   // é€šå¸¸ç§»å‹•
+		DASH,   // ãƒ€ãƒƒã‚·ãƒ¥
+		DAMAGE, // è¢«å¼¾
+		STUN,   // è¡Œå‹•ä¸èƒ½(ã‚¨ãƒãƒ«ã‚®ãƒ¼åˆ‡ã‚Œãªã©ï¼Ÿ)
+		DEAD,   // æ­»äº¡
 	};
 
 private:
-	State m_state; // Œ»İ‚Ìó‘Ô
+	State m_state; // ç¾åœ¨ã®çŠ¶æ…‹
 
 	Model* m_pModel;
 
-	//DirectX::XMFLOAT3 m_pos;//À•W
-	//DirectX::XMFLOAT3  m_scale;//Šg‘å—¦
-	// ƒ_ƒbƒVƒ…—p
-	float m_dashDirX;      // ˆÚ“®•ûŒüX
-	float m_dashDirZ;      // ˆÚ“®•ûŒüZ
-	float m_dashDistance;  // ƒ_ƒbƒVƒ…‹——£
-	float m_dashSpeed;    // 1ƒtƒŒ[ƒ€‚ÌˆÚ“®—Ê
-	float m_dashRemaining; // c‚è‚ÌˆÚ“®‹——£
-	bool m_prevRT;        // ‘OƒtƒŒ[ƒ€RT“ü—Íó‘Ô
-	bool m_nowRT;         // RTƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚©
+	//DirectX::XMFLOAT3 m_pos;//åº§æ¨™
+	//DirectX::XMFLOAT3  m_scale;//æ‹¡å¤§ç‡
+	// ãƒ€ãƒƒã‚·ãƒ¥ç”¨
+	float m_dashDirX;      // ç§»å‹•æ–¹å‘X
+	float m_dashDirZ;      // ç§»å‹•æ–¹å‘Z
+	float m_dashDistance;  // ãƒ€ãƒƒã‚·ãƒ¥è·é›¢
+	float m_dashSpeed;    // 1ãƒ•ãƒ¬ãƒ¼ãƒ ã®ç§»å‹•é‡
+	float m_dashRemaining; // æ®‹ã‚Šã®ç§»å‹•è·é›¢
+	bool m_prevRT;        // å‰ãƒ•ãƒ¬ãƒ¼ãƒ RTå…¥åŠ›çŠ¶æ…‹
+	bool m_nowRT;         // RTãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹
 
-	//–îˆó
-	float m_arrowAngle;  //–îˆó‚Ì‰ñ“]‘¬“x
-	float m_stickDirX;   //X²‚ÌƒXƒeƒBƒbƒN‚ğ•Û
-	float m_stickDirZ;	//Y²‚ÌƒXƒeƒBƒbƒN‚ğ•Û
-	bool m_showArrow;//–îˆó‚ğ•\¦‚·‚é‚©
+	//çŸ¢å°
+	float m_arrowAngle;  //çŸ¢å°ã®å›è»¢é€Ÿåº¦
+	float m_stickDirX;   //Xè»¸ã®ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã‚’ä¿æŒ
+	float m_stickDirZ;	//Yè»¸ã®ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã‚’ä¿æŒ
+	bool m_showArrow;//çŸ¢å°ã‚’è¡¨ç¤ºã™ã‚‹ã‹
 
 
-	// ‹OÕ
+	// è»Œè·¡
 	PlayerTrajectory m_trajectory;
 
-	//ƒJƒƒ‰
-	Camera* m_pCamera; //ƒJƒƒ‰
+	//ã‚«ãƒ¡ãƒ©
+	Camera* m_pCamera; //ã‚«ãƒ¡ãƒ©
 
 public:
 	Player();
 	~Player();
-	//XVˆ—
+	//æ›´æ–°å‡¦ç†
 	void Update();
-	//•`‰æˆ—
+	//æç”»å‡¦ç†
 	void Draw();
-	//–îˆó‚Ì•`‰æ
+	//çŸ¢å°ã®æç”»
 	void DrawArrow();
-	//ƒvƒŒƒCƒ„[‚Æ“G‚ªd‚È‚Á‚½‚Ìˆ—
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨æ•µãŒé‡ãªã£ãŸæ™‚ã®å‡¦ç†
 	int HitPlayer(Enemy** Enemys);
-	//ƒJƒƒ‰‚Ìİ’è
+	//ã‚«ãƒ¡ãƒ©ã®è¨­å®š
 	void SetCamera(Camera* camera);
 
 	bool LoadFbx(const char* file);
 
-	// ó‘Ô‚Ìİ’è
+	// çŠ¶æ…‹ã®è¨­å®š
 	void SetState(State state);
-	// ó‘Ô‚Ìæ“¾
+	// çŠ¶æ…‹ã®å–å¾—
 	State GetState();
 
 private:
-	// ó‘Ô•Ê‚ÌXVˆ—
+	// çŠ¶æ…‹åˆ¥ã®æ›´æ–°å‡¦ç†
 	void UpdateIdle();
 	void UpdateMove();
 	void UpdateDash();

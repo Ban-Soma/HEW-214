@@ -94,7 +94,9 @@ void Player::Update()
 
 			m_stickDirX = moveX;
 			m_stickDirZ = moveZ;
+			//矢印の回転
 			m_arrowAngle = atan2f(moveX, moveZ);
+			//プレイヤの回転
 			m_rotation.y = atan2f(moveX, moveZ);
 			m_showArrow = true;	
 		}
@@ -208,8 +210,8 @@ int Player::HitPlayer(Enemy** Enemys)
         // 関数宣言もスペル修正
 			if (&Enemys[i] == nullptr) { continue; }
 
-			DirectX::XMFLOAT3 EnemyPos = Enemys[i]->GetEnemyPos();
-			DirectX::XMFLOAT3 EnemyScale= Enemys[i]->GetEnemyScale();
+			DirectX::XMFLOAT3 EnemyPos = Enemys[i]->GetPos();
+			DirectX::XMFLOAT3 EnemyScale= Enemys[i]->GetScale();
 
 			//敵とプレイヤーとの距離計算
 			float DistanceX = PlayerPos.x - EnemyPos.x;

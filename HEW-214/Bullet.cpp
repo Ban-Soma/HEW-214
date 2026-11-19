@@ -8,6 +8,16 @@ Bullet::Bullet()
 	, m_speed(0.1f)
 	, m_life(300)
 {
+}
+
+Bullet::Bullet(DirectX::XMFLOAT3 pos,
+	DirectX::XMFLOAT3 direction)
+	: m_pos(pos)
+	, m_scale{ 0.2f,0.2f,0.2f }
+	, m_direction(direction)
+	, m_speed(0.01f)
+	, m_life(300)
+{
 
 }
 
@@ -22,7 +32,11 @@ void Bullet::Update()
 	m_pos.y += m_direction.y * m_speed;
 	m_pos.z += m_direction.z * m_speed;
 
-	m_life--;
+	// ¶‘¶ŽžŠÔŒ¸­
+	if (m_life > 0)
+	{
+		m_life--;
+	}
 }
 
 void Bullet::Draw()
@@ -40,4 +54,9 @@ void Bullet::Draw()
 	//•`‰æˆ—
 	Geometory::SetWorld(fMat);
 	Geometory::DrawBox();
+}
+
+bool Bullet::IsAlive() const
+{
+	return m_life > 0;
 }
