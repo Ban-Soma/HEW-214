@@ -74,6 +74,7 @@ public:
 	// 状態の取得
 	State GetState();
 
+	Energy* GetEnergy();
 private:
 	// 状態別の更新処理
 	void UpdateIdle();
@@ -82,5 +83,5 @@ private:
 	void UpdateDamage();
 	void UpdateStun();
 	void UpdateDead();
-	Energy* GetEnergy();
+	
 };

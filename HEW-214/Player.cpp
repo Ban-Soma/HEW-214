@@ -347,4 +347,9 @@ void Player::UpdateDead()
 {
 }
 
+Energy* Player::GetEnergy()
+{
+	return m_pEnergy;
+}
+
 
