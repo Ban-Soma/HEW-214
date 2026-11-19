@@ -32,7 +32,7 @@ static const float	DEBUG_GRID_MARGIN	= METER(1.0f);	// グリッド配置幅
 
 #define SAFE_DELETE(p) {if(p){delete (p);(p) = nullptr;}}//メモリの開放
 
-#define MAX_ENEMY (20) //最大敵数
+#define MAX_ENEMY (50) //最大敵数
 
 //エネルギー
 static constexpr float MAX_ENERGY = 100.0f;
