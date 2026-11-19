@@ -62,14 +62,6 @@ public:
 	void Draw();
 	//矢印の描画
 	void DrawArrow();
-	//座標の設定
-	void SetPos(float x, float y, float z);
-	//拡大率の設定
-	void SetScale(float x, float y, float z);
-	//座標の取得
-	DirectX::XMFLOAT3 GetPos();
-	//大きさの取得
-	DirectX::XMFLOAT3 GetScale();
 	//プレイヤーと敵が重なった時の処理
 	int HitPlayer(Enemy** Enemys);
 	//カメラの設定
@@ -91,5 +83,5 @@ private:
 	void UpdateDamage();
 	void UpdateStun();
 	void UpdateDead();
-	
+
 };
