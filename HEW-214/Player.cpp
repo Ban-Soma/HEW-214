@@ -15,26 +15,28 @@
 
 
 Player::Player()
-    //モデル描画
+//モデル描画
 	:m_pModel(nullptr)
-	,m_state(State::IDLE)
+	, m_state(State::IDLE)
 	// ダッシュ用
-	,m_dashDirX (0.0f)     // 移動方向X
-	,m_dashDirZ(0.0f)      // 移動方向Z
-	,m_dashDistance(3.0f)  // ダッシュ距離
-	,m_dashSpeed (0.3f)    // 1フレームの移動量
-	,m_dashRemaining(0.0f) // 残りの移動距離
-	,m_prevRT (false)      // 前フレームRT入力状態
-	,m_nowRT(false)        // RTを押しているか 
+	, m_dashDirX(0.0f)     // 移動方向X
+	, m_dashDirZ(0.0f)      // 移動方向Z
+	, m_dashDistance(3.0f)  // ダッシュ距離
+	, m_dashSpeed(0.3f)    // 1フレームの移動量
+	, m_dashRemaining(0.0f) // 残りの移動距離
+	, m_prevRT(false)      // 前フレームRT入力状態
+	, m_nowRT(false)        // RTを押しているか 
 	//矢印表示
-	,m_arrowAngle(0.0f)
-	,m_stickDirX(0.0f)
-	,m_stickDirZ(0.0f)
-	,m_showArrow(false)
+	, m_arrowAngle(0.0f)
+	, m_stickDirX(0.0f)
+	, m_stickDirZ(0.0f)
+	, m_showArrow(false)
 	//カメラ
-	,m_pCamera(nullptr)
+	, m_pCamera(nullptr)
+	, m_trajectory(nullptr)
 {
 	m_pEnergy = new Energy;
+	m_trajectory = new PlayerTrajectory;
 }
 
 Player::~Player()
@@ -124,6 +126,8 @@ void Player::Update()
 
 	// 前フレームのRT入力状態を取得
 	m_prevRT = m_nowRT;
+	
+	m_trajectory->AddPoint(m_pos);
 }
 
 void Player::Draw()
@@ -174,7 +178,7 @@ void Player::Draw()
 		}
 	}
 	// 軌跡の描画
-	m_trajectory.Draw();
+	m_trajectory->Draw();
 	//矢印の描画
 	if (m_showArrow) DrawArrow();
 }
@@ -272,7 +276,7 @@ void Player::UpdateIdle()
 			m_dashDirX = m_stickDirX;
 			m_dashDirZ = m_stickDirZ;
 			m_dashRemaining = m_dashDistance;
-
+			m_pEnergy->ConsumeDash();
 			SetState(State::DASH);
 		}
 		else
@@ -294,12 +298,12 @@ void Player::UpdateMove()
 	}
 
 	// RT押した瞬間にダッシュ開始
-	if (m_nowRT && !m_prevRT)
+	if (m_nowRT && !m_prevRT&&!m_pEnergy->IsOverheated())
 	{
 		m_dashDirX = m_stickDirX;
 		m_dashDirZ = m_stickDirZ;
 		m_dashRemaining = m_dashDistance;
-
+		m_pEnergy->ConsumeDash();
 		SetState(State::DASH);
 	}
 }
@@ -319,7 +323,7 @@ void Player::UpdateDash()
 	if (m_dashRemaining <= 0.0f)
 	{
 		m_dashRemaining = 0.0f;
-		
+		m_pEnergy->OnDashEnd();
 		// スティック入力がある場合
 		if (m_showArrow)
 		{

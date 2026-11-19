@@ -64,5 +64,5 @@ float Energy::GetEnergyRatio() const
 
 bool Energy::IsOverheated() const
 {
-	return false;
+	return m_isOverheated;
 }

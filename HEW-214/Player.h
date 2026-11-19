@@ -47,7 +47,7 @@ private:
 
 
 	// 軌跡
-	PlayerTrajectory m_trajectory;
+	PlayerTrajectory* m_trajectory;
 
 	//カメラ
 	Camera* m_pCamera; //カメラ
