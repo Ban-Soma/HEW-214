@@ -23,7 +23,7 @@ Bullet::Bullet(DirectX::XMFLOAT3 pos,
 
 Bullet::~Bullet()
 {
-
+	
 }
 
 void Bullet::Update()

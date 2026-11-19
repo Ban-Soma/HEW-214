@@ -26,7 +26,7 @@ private:
 	};
 
 private:
-	State state;
+	State m_State;
 	Enemy** m_pEnemy;
 	Camera* m_pCamera;
 	Model* m_pModel;

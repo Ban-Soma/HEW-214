@@ -29,7 +29,7 @@ Enemy::Enemy()
 	, m_pCamera(nullptr)
 	, m_shotTimer(0)
 	, m_shotInterval(60)
-	,state(IDLE)
+	,m_State(IDLE)
 {
 
 }
@@ -41,7 +41,7 @@ Enemy::~Enemy()
 
 void Enemy::Update()
 {
-	switch (state)
+	switch (m_State)
 	{
 	case State::IDLE: UpdateIdle(); break;
 	case State::MOVE: UpdateMove(); break;
@@ -49,20 +49,39 @@ void Enemy::Update()
 	case State::DAMAGE: UpdateIdle(); break;
 	case State::STUN: UpdateIdle(); break;
 	case State::DEAD: UpdateIdle(); break;
-
 	}
-	
-
-	Shoot();
-
 	for (Bullet& bullet : m_bullets)
 	{
-		bullet.Update();
+		if (!bullet.IsAlive())continue;
+			bullet.Update();
 	}	
 }
 void Enemy::UpdateIdle()
 {
+	// プレイヤーが設定されていなければ処理を終了
+	if (g_pPlayer == nullptr)	return;
 
+	//プレイヤーの位置を取得
+	DirectX::XMFLOAT3 playerPos = g_pPlayer->GetPos();
+
+	//プレイヤーへの方向計算
+	DirectX::XMVECTOR g_direction = DirectX::XMVectorSet(
+		g_pPlayer->GetPos().x - m_pos.x,
+		0.0f,
+		g_pPlayer->GetPos().z - m_pos.z,
+		0.0f
+	);
+
+	//プレイヤーとの距離を計算
+	float g_distance = DirectX::XMVectorGetX(DirectX::XMVector3Length(g_direction));
+
+	//移動前の位置を候補位置にコピー
+
+	//距離が一定以下ならプレイヤーに近づく
+	if (g_distance <= 5.0f && g_distance > 0)
+	{
+		SetState(MOVE);
+	}
 }
 void Enemy::UpdateMove()
 {
@@ -70,7 +89,7 @@ void Enemy::UpdateMove()
 }
 void Enemy::UpdateAtack()
 {
-
+	Shoot();
 }
 void Enemy::UpdateDamage()
 {
@@ -184,13 +203,17 @@ void Enemy::FollowingEnemy()
 	DirectX::XMFLOAT3 nextPos = m_pos;
 
 	//距離が一定以下ならプレイヤーに近づく
-	if (g_distance <= 2.5f && g_distance > 0.5f)
+	if (g_distance <= 5.0f && g_distance > 0.5f)
 	{
 		//正規化して移動量を計算
 		g_direction = DirectX::XMVector3Normalize(g_direction);
 		//敵をプレイヤーに向かって移動,//追従方向と速度から候補位置の計算
 		nextPos.x += DirectX::XMVectorGetX(g_direction) * m_moveSpeed;
 		nextPos.z += DirectX::XMVectorGetZ(g_direction) * m_moveSpeed;
+	}
+	else if (g_distance <= 5.0f)
+	{
+		SetState(IDLE);
 	}
 
 	bool bOverlap = false;
@@ -298,4 +321,14 @@ bool Enemy::LoadEnemyFbx(const char* file)
 {
 	if (m_pModel == nullptr) m_pModel = new Model();
 	return m_pModel->Load(file, 0.5f);
+}
+// 状態の設定
+void Enemy::SetState(State state)
+{
+	m_State = state;
+}
+// 状態の取得
+Enemy::State Enemy::GetState()
+{
+	return m_State;
 }
