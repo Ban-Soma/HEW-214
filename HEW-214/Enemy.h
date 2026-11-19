@@ -13,7 +13,7 @@ class Player;
 
 
 class Enemy : public GameObject  {
-private:
+public:
 	// プレイヤーの状態
 	enum State {
 		IDLE,   // 待機
@@ -41,6 +41,7 @@ private:
 	int m_EnemyCount; //フィールドに生成されてる敵の数
 	int m_EnemyLife; //敵のHP
 
+	float m_DeadTimer;
 public:
 	//コンストラクタ
 	Enemy();
@@ -86,4 +87,5 @@ private:
 	void UpdateDamage();
 	void UpdateStun();
 	void UpdateDead();
+	void UpdateDeadEnd();
 };

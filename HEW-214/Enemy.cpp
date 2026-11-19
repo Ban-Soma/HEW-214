@@ -24,12 +24,13 @@ Enemy::Enemy()
 	: m_moveSpeed(0.02f)
 	, m_EnemyCount(0)
 	, m_EnemyLife(1)
-	, m_pEnemy (nullptr)
+	, m_pEnemy(nullptr)
 	, m_pModel(nullptr)
 	, m_pCamera(nullptr)
 	, m_shotTimer(0)
 	, m_shotInterval(60)
-	,m_State(IDLE)
+	, m_State(IDLE)
+	, m_DeadTimer(0.0f)
 {
 
 }
@@ -41,22 +42,30 @@ Enemy::~Enemy()
 
 void Enemy::Update()
 {
-	//switch (m_State)
-	//{
-	//case State::IDLE: UpdateIdle(); break;
-	//case State::MOVE: UpdateMove(); break;
-	//case State::ATACK: UpdateAtack(); break;
-	//case State::DAMAGE: UpdateIdle(); break;
-	//case State::STUN: UpdateIdle(); break;
-	//case State::DEAD: UpdateIdle(); break;
-	//}
+	switch (m_State)
+	{
+	case State::IDLE: UpdateIdle(); break;
+	case State::MOVE: UpdateMove(); break;
+	case State::ATACK: UpdateAtack(); break;
+	case State::DAMAGE: UpdateIdle(); break;
+	case State::STUN: UpdateIdle(); break;
+	case State::DEAD: UpdateDead(); break;
+	case State::DEADEND:UpdateDeadEnd();break;
+	}
+	for (Bullet& bullet : m_bullets)
+	{
+		if (!bullet.IsAlive())continue;
+			bullet.Update();
+	}	
+
+	//FollowingEnemy();
+
+	////Shoot();
+
 	//for (Bullet& bullet : m_bullets)
 	//{
-	//	if (!bullet.IsAlive())continue;
-	//		bullet.Update();
-	//}	
-
-
+	//	bullet.Update();
+	//}
 
 }
 void Enemy::UpdateIdle()
@@ -81,7 +90,7 @@ void Enemy::UpdateIdle()
 	//移動前の位置を候補位置にコピー
 
 	//距離が一定以下ならプレイヤーに近づく
-	if (g_distance <= 5.0f && g_distance > 0)
+	if (g_distance <= MAX_DISTANCE && g_distance > 0)
 	{
 		SetState(MOVE);
 	}
@@ -103,6 +112,18 @@ void Enemy::UpdateStun()
 
 }
 void Enemy::UpdateDead()
+{
+	m_DeadTimer++;
+	if (m_DeadTimer* m_DeadTimer + m_DeadTimer * m_DeadTimer)//二乗だから0.01以下なら更新しない
+	{
+		m_rotation.z = atan2f(m_DeadTimer*60, m_DeadTimer*60);
+	}
+	if (m_DeadTimer >= 120)
+		SetState(DEADEND);
+	
+
+}
+void Enemy::UpdateDeadEnd()
 {
 
 }
@@ -132,7 +153,7 @@ void Enemy::Draw()
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
 	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-	for (Bullet& bullet : m_bullets)
+
 	//メッシュ別にモデルを表示
 	for (int i = 0; i < m_pModel->GetMeshNum(); ++i)
 	{
@@ -206,7 +227,7 @@ void Enemy::FollowingEnemy()
 	DirectX::XMFLOAT3 nextPos = m_pos;
 
 	//距離が一定以下ならプレイヤーに近づく
-	if (g_distance <= 5.0f && g_distance > 0.5f)
+	if (g_distance <= MAX_DISTANCE && g_distance > MIN_DISTANCE)
 	{
 		//正規化して移動量を計算
 		g_direction = DirectX::XMVector3Normalize(g_direction);
@@ -214,10 +235,13 @@ void Enemy::FollowingEnemy()
 		nextPos.x += DirectX::XMVectorGetX(g_direction) * m_moveSpeed;
 		nextPos.z += DirectX::XMVectorGetZ(g_direction) * m_moveSpeed;
 	}
-	else if (g_distance >= 5.0f)
+	else if (g_distance >= MAX_DISTANCE)
 	{
 		SetState(IDLE);
 	}
+	else SetState(ATACK);
+
+
 
 	bool bOverlap = false;
 	const float fMinDistance = 0.5f;
@@ -265,6 +289,13 @@ void Enemy::Shoot()
 		playerPos.z - m_pos.z,
 		0.0f
 	);
+	//プレイヤーの方に向く計算
+	float dx = playerPos.x - m_pos.x;//ｘ方向に差
+	float dz = playerPos.z - m_pos.z;//ｚ方向に差
+	if (dx * dx + dz * dz)//二乗だから0.01以下なら更新しない
+	{
+		m_rotation.y = atan2f(dx, dz);
+	}
 
 	// プレイヤーとの距離を計算
 	float distance = DirectX::XMVectorGetX(
@@ -278,6 +309,7 @@ void Enemy::Shoot()
 	if (distance > shootDistance)
 	{
 		m_shotTimer = 0;
+		SetState(IDLE);
 		return;
 	}
 

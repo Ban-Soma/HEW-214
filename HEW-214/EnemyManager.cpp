@@ -306,11 +306,10 @@ void EnemyManager::DeadEnemy()
 		Enemy* enemy = m_pEnemy[i];
 		if (enemy == nullptr) continue;
 		if (enemy->IsAlive()) continue;
+        if(enemy->GetState()==Enemy::DEADEND) 
+        if(enemy->GetState()==Enemy::DEAD)continue;
         Energy* t_energy=g_player->GetEnergy();
         t_energy->OnEnemyKilled();
-            delete m_pEnemy[i];
-            m_pEnemy[i] = nullptr;
-       
-        
+        enemy->SetState(Enemy::DEAD);
 	}
 }

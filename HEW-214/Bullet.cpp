@@ -15,7 +15,7 @@ Bullet::Bullet(DirectX::XMFLOAT3 pos,
 	: m_pos(pos)
 	, m_scale{ 0.2f,0.2f,0.2f }
 	, m_direction(direction)
-	, m_speed(0.01f)
+	, m_speed(0.1f)
 	, m_life(300)
 {
 
