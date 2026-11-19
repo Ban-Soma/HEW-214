@@ -41,20 +41,23 @@ Enemy::~Enemy()
 
 void Enemy::Update()
 {
-	switch (m_State)
-	{
-	case State::IDLE: UpdateIdle(); break;
-	case State::MOVE: UpdateMove(); break;
-	case State::ATACK: UpdateAtack(); break;
-	case State::DAMAGE: UpdateIdle(); break;
-	case State::STUN: UpdateIdle(); break;
-	case State::DEAD: UpdateIdle(); break;
-	}
-	for (Bullet& bullet : m_bullets)
-	{
-		if (!bullet.IsAlive())continue;
-			bullet.Update();
-	}	
+	//switch (m_State)
+	//{
+	//case State::IDLE: UpdateIdle(); break;
+	//case State::MOVE: UpdateMove(); break;
+	//case State::ATACK: UpdateAtack(); break;
+	//case State::DAMAGE: UpdateIdle(); break;
+	//case State::STUN: UpdateIdle(); break;
+	//case State::DEAD: UpdateIdle(); break;
+	//}
+	//for (Bullet& bullet : m_bullets)
+	//{
+	//	if (!bullet.IsAlive())continue;
+	//		bullet.Update();
+	//}	
+
+
+
 }
 void Enemy::UpdateIdle()
 {
@@ -211,7 +214,7 @@ void Enemy::FollowingEnemy()
 		nextPos.x += DirectX::XMVectorGetX(g_direction) * m_moveSpeed;
 		nextPos.z += DirectX::XMVectorGetZ(g_direction) * m_moveSpeed;
 	}
-	else if (g_distance <= 5.0f)
+	else if (g_distance >= 5.0f)
 	{
 		SetState(IDLE);
 	}
