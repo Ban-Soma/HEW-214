@@ -33,19 +33,25 @@ Player::Player()
 	,m_showArrow(false)
 	//カメラ
 	,m_pCamera(nullptr)
-
 {
-
+	m_pEnergy = new Energy;
 }
 
 Player::~Player()
 {
 	SAFE_DELETE(m_pModel);
+	SAFE_DELETE(m_pEnergy);
 }
 
 void Player::Update()
 {
 	const float MoveSpeed = 0.05f;
+
+	//仮の経過時間(60FPS想定)
+	//後で実際のdeltaTimeni置き換える
+	const float deltaTime = 1.0f / 60.0f;
+	m_pEnergy->Update(deltaTime);
+
 
 	// キーボード移動（現状どおりワールド座標基準）
 	if (IsKeyPress('W')) { m_pos.z += MoveSpeed; }
