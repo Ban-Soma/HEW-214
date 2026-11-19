@@ -29,6 +29,7 @@ Enemy::Enemy()
 	, m_pCamera(nullptr)
 	, m_shotTimer(0)
 	, m_shotInterval(60)
+	,state(IDLE)
 {
 
 }
@@ -40,16 +41,48 @@ Enemy::~Enemy()
 
 void Enemy::Update()
 {
-	FollowingEnemy();
+	switch (state)
+	{
+	case State::IDLE: UpdateIdle(); break;
+	case State::MOVE: UpdateMove(); break;
+	case State::ATACK: UpdateAtack(); break;
+	case State::DAMAGE: UpdateIdle(); break;
+	case State::STUN: UpdateIdle(); break;
+	case State::DEAD: UpdateIdle(); break;
+
+	}
+	
 
 	Shoot();
 
 	for (Bullet& bullet : m_bullets)
 	{
 		bullet.Update();
-	}
+	}	
+}
+void Enemy::UpdateIdle()
+{
 
-	
+}
+void Enemy::UpdateMove()
+{
+	FollowingEnemy();
+}
+void Enemy::UpdateAtack()
+{
+
+}
+void Enemy::UpdateDamage()
+{
+
+}
+void Enemy::UpdateStun()
+{
+
+}
+void Enemy::UpdateDead()
+{
+
 }
 
 void Enemy::Draw()
