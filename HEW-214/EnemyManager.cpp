@@ -1,6 +1,5 @@
 #include "EnemyManager.h"
 #include "Player.h"
-#include "Combo.h"
 #include <cmath>　//計算標準ライブラリ
 #include <cstdlib>//乱数など
 
@@ -305,6 +304,7 @@ void EnemyManager::SetEnemyCamera(Camera* camera)
 void EnemyManager::DeadEnemy()
 {
     const int combonum = 1;
+    Combo* t_combo = g_player->GetCombo();
     for(int i=0; i<MAX_ENEMY; i++)
     {
 		Enemy* enemy = m_pEnemy[i];
@@ -312,12 +312,12 @@ void EnemyManager::DeadEnemy()
 		if (enemy->IsAlive()) continue;
         if (enemy->GetState() == Enemy::DEADEND)
         {
-            AddCombo(combonum);
+            t_combo->AddCombo(combonum);
             delete m_pEnemy[i];
             m_pEnemy[i] = nullptr;
         }
         if(enemy->GetState()==Enemy::DEAD)continue;
-        ResetCombo();
+        t_combo->ResetCombo();
         Energy* t_energy=g_player->GetEnergy();
         t_energy->OnEnemyKilled();
         enemy->SetState(Enemy::DEAD);

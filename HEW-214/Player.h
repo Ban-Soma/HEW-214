@@ -4,6 +4,7 @@
 #include"PlayerTrajectory.h"
 #include "Model.h"
 #include "Camera.h"
+#include "Combo.h"
 #include "Energy.h"
 
 
@@ -50,9 +51,11 @@ private:
 	PlayerTrajectory* m_trajectory;
 
 	//カメラ
-	Camera* m_pCamera; //カメラ
+	Camera* m_pCamera; 
 
 	Energy* m_pEnergy;
+
+	Combo* m_pCombo;
 public:
 	Player();
 	~Player();
@@ -76,10 +79,8 @@ public:
 
 	Energy* GetEnergy();
 
-	//以下コンボ関係の関数
-	void InitCombo();
-	void AddCombo();
-private:
+	Combo* GetCombo();
+
 	// 状態別の更新処理
 	void UpdateIdle();
 	void UpdateMove();

@@ -1,8 +1,18 @@
 #pragma once
-void InitCombo();
-void UpdateCombo();
-void DrawCombo();
-void UninitCombo();
+class Combo {
+private:
+	int m_CountCombo;
 
-void AddCombo(int num);
-void ResetCombo();
+public:
+	Combo();
+	~Combo();
+
+	void UpdateCombo();
+	void DrawCombo();
+
+	void AddCombo(int num);
+	void ResetCombo();
+
+	int GetCombo() const;
+
+};

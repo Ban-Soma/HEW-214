@@ -3,12 +3,14 @@
 #include "Player.h"
 #include "EnemyManager.h"
 #include "Energy.h"
+#include "Combo.h"
 #include <sstream>
 #include <iomanip>
 
 extern Player* g_InfoPlayer = new Player;
 extern EnemyManager* g_InfoEnemyManager = new EnemyManager;
 extern Energy* g_InfoEnergy = new Energy;
+extern Combo* g_InfoCombo = new Combo;
 void DebugInfo::RegisterPlayer(Player* player)
 {
     g_InfoPlayer = player;
@@ -21,6 +23,10 @@ void DebugInfo::RegisterEnemyManager(EnemyManager* manager)
 void DebugInfo::RegisterEnergy(Energy* energy)
 {
     g_InfoEnergy = energy;
+}
+void DebugInfo::RegisterCombo(Combo* combo)
+{
+    g_InfoCombo = combo;
 }
 bool DebugInfo::Initialize(ID3D11Device* device,ID3D11DeviceContext* context,const std::string& fontPath)
 {
@@ -59,6 +65,7 @@ void DebugInfo::Update()
     values.playerZ = SavePos.z;
 
     values.energy = g_InfoEnergy->GetEnergy();
+    values.combo = g_InfoCombo->GetCombo();
 
 
     //‚±‚±‚Ü‚Å‚Ì”ÍˆÍ“à‚É•ÏX‚·‚é’l‚ğ“ü—Í‚·‚é

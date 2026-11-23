@@ -11,6 +11,7 @@
 class Player;
 class EnemyManager;
 class Energy;
+class Combo;
 // デバッグ表示する情報
 struct DebugValues
 {
@@ -37,6 +38,7 @@ public:
     void RegisterPlayer(Player* player);
     void RegisterEnemyManager(EnemyManager* manager);
     void RegisterEnergy(Energy* energy);
+    void RegisterCombo(Combo* combo);
     //=============================================
     void Update();
     void Draw();

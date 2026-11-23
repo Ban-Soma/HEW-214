@@ -47,6 +47,7 @@ SceneGame::SceneGame()
 	m_debugInfo.RegisterPlayer(m_pPlayer);
 	m_debugInfo.RegisterEnemyManager(m_pEnemyManager);
 	m_debugInfo.RegisterEnergy(m_pPlayer->GetEnergy());
+	m_debugInfo.RegisterCombo(m_pPlayer->GetCombo());
 	
 	
 }

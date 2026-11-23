@@ -1,34 +1,38 @@
 #include "Combo.h"
-
-
-//コンボ数をカウントするための変数
-int g_CountCombo = 0;
-void InitCombo()
-{
-
-}
-
-void UpdateCombo()
+Combo::Combo()
+	:m_CountCombo(0)
 {
 }
 
-void DrawCombo()
+Combo::~Combo()
 {
 }
 
-void UninitCombo()
+
+void Combo::UpdateCombo()
 {
 }
 
-void AddCombo(int num)
+void Combo::DrawCombo()
 {
-	g_CountCombo += num;
-	if (g_CountCombo >= 999) {
-		g_CountCombo = 999;
+}
+
+
+void Combo::AddCombo(int num)
+{
+	m_CountCombo += num;
+	if (m_CountCombo >= 999) {
+		m_CountCombo = 999;
 	}
 }
 
-void ResetCombo()
+void Combo:: ResetCombo()
 {
-	g_CountCombo = 0;
+	m_CountCombo = 0;
 }
+
+int Combo::GetCombo() const {
+	return  m_CountCombo;
+}
+
+

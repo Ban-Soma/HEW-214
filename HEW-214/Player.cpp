@@ -34,7 +34,10 @@ Player::Player()
 	//ÉJÉÅÉâ
 	, m_pCamera(nullptr)
 	, m_trajectory(nullptr)
+	,m_pEnergy(nullptr)
+	,m_pCombo(nullptr)
 {
+	m_pCombo = new Combo;
 	m_pEnergy = new Energy;
 	m_trajectory = new PlayerTrajectory;
 }
@@ -357,6 +360,11 @@ void Player::UpdateDead()
 Energy* Player::GetEnergy()
 {
 	return m_pEnergy;
+}
+
+Combo* Player::GetCombo()
+{
+	return m_pCombo;
 }
 
 
