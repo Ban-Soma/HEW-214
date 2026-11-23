@@ -1,5 +1,6 @@
 #include "EnemyManager.h"
 #include "Player.h"
+#include "Combo.h"
 #include <cmath>　//計算標準ライブラリ
 #include <cstdlib>//乱数など
 
@@ -10,7 +11,7 @@
     ,m_pCamera(nullptr)
     ,m_activeSpawnIndex{-1}
 {
- 
+
 }
 
 //終了
@@ -135,6 +136,7 @@ bool EnemyManager::IsValidSpawnPosition(float x, float z)
        }
 }
 
+//敵の生成
 void EnemyManager::CreateEnemy(int slot, int spawnIndex)
 {
     if (slot < 0 || slot >= MAX_ENEMY) return;
@@ -294,13 +296,15 @@ Enemy* const* EnemyManager::GetEnemies() const
     return m_pEnemy;
 }
 
+//エネミーのカメラ
 void EnemyManager::SetEnemyCamera(Camera* camera)
 {
     m_pCamera = camera;
 }
-
+//敵が死んだら
 void EnemyManager::DeadEnemy()
 {
+    const int combonum = 1;
     for(int i=0; i<MAX_ENEMY; i++)
     {
 		Enemy* enemy = m_pEnemy[i];
@@ -308,10 +312,12 @@ void EnemyManager::DeadEnemy()
 		if (enemy->IsAlive()) continue;
         if (enemy->GetState() == Enemy::DEADEND)
         {
+            AddCombo(combonum);
             delete m_pEnemy[i];
             m_pEnemy[i] = nullptr;
         }
         if(enemy->GetState()==Enemy::DEAD)continue;
+        ResetCombo();
         Energy* t_energy=g_player->GetEnergy();
         t_energy->OnEnemyKilled();
         enemy->SetState(Enemy::DEAD);

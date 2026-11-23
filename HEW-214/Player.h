@@ -75,6 +75,10 @@ public:
 	State GetState();
 
 	Energy* GetEnergy();
+
+	//以下コンボ関係の関数
+	void InitCombo();
+	void AddCombo();
 private:
 	// 状態別の更新処理
 	void UpdateIdle();

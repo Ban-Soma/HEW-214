@@ -55,14 +55,14 @@
     <Filter Include="ヘッダー ファイル\Enemy">
       <UniqueIdentifier>{a8d60cba-edcf-4823-abcc-26770cc3f4ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Font">
-      <UniqueIdentifier>{4282ced6-3c0f-46e7-8242-6f5f47dcf330}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Font">
-      <UniqueIdentifier>{4c343b23-eed4-49d6-a500-40a81010a03f}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\System\Font">
+      <UniqueIdentifier>{85766e59-ca57-49c4-a437-e04ec7032f11}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Startup.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
@@ -141,71 +141,74 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>ソース ファイル\System\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="Combo.cpp">
+      <Filter>ソース ファイル\Player</Filter>
+    </ClCompile>
     <ClCompile Include="Font\AtlasTexture.cpp">
-      <Filter>ソース ファイル\Font</Filter>
+      <Filter>ソース ファイル\System\Font</Filter>
     </ClCompile>
     <ClCompile Include="Font\BinaryReader.cpp">
-      <Filter>ソース ファイル\Font</Filter>
+      <Filter>ソース ファイル\System\Font</Filter>
     </ClCompile>
     <ClCompile Include="Font\BitmapDebugWriter.cpp">
-      <Filter>ソース ファイル\Font</Filter>
+      <Filter>ソース ファイル\System\Font</Filter>
     </ClCompile>
     <ClCompile Include="Font\DebugFontRenderer.cpp">
-      <Filter>ソース ファイル\Font</Filter>
+      <Filter>ソース ファイル\System\Font</Filter>
     </ClCompile>
     <ClCompile Include="Font\DebugImage.cpp">
-      <Filter>ソース ファイル\Font</Filter>
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugInfo.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
     </ClCompile>
     <ClCompile Include="Font\DebugRenderer.cpp">
-      <Filter>ソース ファイル\Font</Filter>
+      <Filter>ソース ファイル\System\Font</Filter>
     </ClCompile>
     <ClCompile Include="Font\DebugRenderercpp.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\Font.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\FontSystem.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\GlyphBitmap.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\GlyphCache.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\Rasterizer.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\SpriteFontRenderer.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Startup.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\TextObject.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\TextRenderercpp.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\TextureAtlas.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\TTFParser.cpp">
-      <Filter>ソース ファイル\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Font\Utf8Decoder.cpp">
-      <Filter>ソース ファイル\Font</Filter>
+      <Filter>ソース ファイル\System\Font</Filter>
     </ClCompile>
     <ClCompile Include="Energy.cpp">
       <Filter>ソース ファイル\Player</Filter>
     </ClCompile>
-    <ClCompile Include="DebugInfo.cpp">
-      <Filter>ソース ファイル\System</Filter>
+    <ClCompile Include="Font\Font.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\FontSystem.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\GlyphBitmap.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\GlyphCache.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\Rasterizer.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\SpriteFontRenderer.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\TextObject.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\TextRenderercpp.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\Utf8Decoder.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\TTFParser.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\TextureAtlas.cpp">
+      <Filter>ソース ファイル\System\Font</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Defines.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="Geometory.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
@@ -278,85 +281,85 @@
     <ClInclude Include="GameObject.h">
       <Filter>ヘッダー ファイル\System\DirectX</Filter>
     </ClInclude>
-    <ClInclude Include="Font\AtlasTexture.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\BinaryReader.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\BitmapDebugWriter.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\DebugFontRenderer.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\DebugImage.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\DebugRenderer.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\Font.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\FontSystem.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\Glyph.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\GlyphBitmap.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\GlyphCache.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\IFontRenderer.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\Rasterizer.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\SpriteFontRenderer.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\Tables.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\Tag.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\TextBitmap.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\TextLayout.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\TextMesh.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\TextObject.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\TextRenderer.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\TextureAtlas.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\TTFParser.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Font\Utf8Decoder.h">
-      <Filter>ヘッダー ファイル\Font</Filter>
-    </ClInclude>
-    <ClInclude Include="Defines.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="DebugInfo.h">
-      <Filter>ヘッダー ファイル\System</Filter>
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Energy.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\AtlasTexture.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\BinaryReader.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\BitmapDebugWriter.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\DebugFontRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\DebugImage.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\DebugRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\Font.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\FontSystem.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\Glyph.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\GlyphBitmap.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\GlyphCache.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\IFontRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\Rasterizer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\SpriteFontRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\Tables.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\Tag.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\TextBitmap.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\TextLayout.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\TextMesh.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\TextObject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\TextRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\TextureAtlas.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\TTFParser.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\Utf8Decoder.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Combo.h">
       <Filter>ヘッダー ファイル\Player</Filter>
     </ClInclude>
   </ItemGroup>

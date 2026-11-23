@@ -148,6 +148,7 @@
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CombatSystem.cpp" />
+    <ClCompile Include="Combo.cpp" />
     <ClCompile Include="DebugInfo.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Energy.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="CombatSystem.h" />
+    <ClInclude Include="Combo.h" />
     <ClInclude Include="DebugInfo.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />

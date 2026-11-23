@@ -277,6 +277,8 @@ void Enemy::Shoot()
 
 	// プレイヤーの位置を取得
 	DirectX::XMFLOAT3 playerPos = g_pPlayer->GetPos();
+	//プレイヤーの大きさを取得
+	DirectX::XMFLOAT3 playerSize = g_pPlayer->GetScale();
 
 	// プレイヤーへの方向を計算
 	DirectX::XMVECTOR direction = DirectX::XMVectorSet(
