@@ -12,6 +12,7 @@
 #include "Defines.h"
 #include "DebugInfo.h"
 #include "Energy.h"
+#include "Combo.h"
 
 class SceneGame : public Scene
 {

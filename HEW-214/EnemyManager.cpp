@@ -16,10 +16,10 @@
 //I—¹
 EnemyManager::~EnemyManager()
 {
-    
     for (int i = 0; i < MAX_ENEMY; i++) {
         SAFE_DELETE(m_pEnemy[i]);
     }
+
 }
 
 //‰Šú‰»
@@ -317,7 +317,6 @@ void EnemyManager::DeadEnemy()
             m_pEnemy[i] = nullptr;
         }
         if(enemy->GetState()==Enemy::DEAD)continue;
-        t_combo->ResetCombo();
         Energy* t_energy=g_player->GetEnergy();
         t_energy->OnEnemyKilled();
         enemy->SetState(Enemy::DEAD);

@@ -44,8 +44,10 @@ Player::Player()
 
 Player::~Player()
 {
-	SAFE_DELETE(m_pModel);
+	SAFE_DELETE(m_trajectory);
 	SAFE_DELETE(m_pEnergy);
+	SAFE_DELETE(m_pCombo);
+	SAFE_DELETE(m_pModel);
 }
 
 void Player::Update()
