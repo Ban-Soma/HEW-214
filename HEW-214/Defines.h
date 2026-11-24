@@ -20,7 +20,7 @@ static const float fFPS = static_cast<float>(FPS);
 static const float GRAVITY = 0.98f;
 
 // タイトル
-static const char* APP_TITLE = "びりびり電気くん";
+static const char* APP_TITLE = "スパークバーサーク";
 
 // 画面サイズ
 static const int SCREEN_WIDTH	= 1280;
