@@ -33,12 +33,13 @@ public:
 	static void DrawCylinder();
 	static void DrawSphere();
 
+	static void SetTexture(ID3D11ShaderResourceView* texture);
 private:
 	static void MakeVS();
 	static void MakePS();
 	static void MakeLineShader();
 	static void MakeLine();
-
+	static void MakeTexturePS();
 private:
 	static void MakeBox();
 	static void MakeCylinder();
@@ -58,6 +59,12 @@ private:
 	static DirectX::XMFLOAT4X4 m_WVP[3];
 	static void* m_pLineVtx;
 	static int m_lineCnt;
+
+	//’Ç
+	static Shader* m_pTexturePS;
+	static ID3D11SamplerState* m_pSampler;
+	static ID3D11ShaderResourceView* m_pCurrentTexture;
+	
 };
 
 #endif // __GEOMETORY_H__

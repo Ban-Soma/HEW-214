@@ -11,6 +11,10 @@ DirectX::XMFLOAT4X4 Geometory::m_WVP[3];
 void* Geometory::m_pLineVtx;
 int Geometory::m_lineCnt = 0;
 
+Shader* Geometory::m_pTexturePS = nullptr;
+ID3D11SamplerState* Geometory::m_pSampler = nullptr;
+ID3D11ShaderResourceView* Geometory::m_pCurrentTexture = nullptr;
+
 void Geometory::Init()
 {
 	for (int i = 0; i < 3; ++i)
@@ -20,6 +24,7 @@ void Geometory::Init()
 	MakeSphere();
 	MakeVS();
 	MakePS();
+	MakeTexturePS();
 	MakeLineShader();
 	MakeLine();
 }
@@ -34,6 +39,9 @@ void Geometory::Uninit()
 	SAFE_DELETE(m_pSphere);
 	SAFE_DELETE(m_pCylinder);
 	SAFE_DELETE(m_pBox);
+	SAFE_DELETE(m_pTexturePS);
+	SAFE_RELEASE(m_pSampler);
+	m_pCurrentTexture = nullptr;
 }
 
 void Geometory::SetWorld(DirectX::XMFLOAT4X4 world)
@@ -75,7 +83,20 @@ void Geometory::DrawBox()
 		return;
 	m_pVS->WriteBuffer(0, m_WVP);
 	m_pVS->Bind();
-	m_pPS->Bind();
+	if (m_pCurrentTexture != nullptr && m_pTexturePS != nullptr && m_pSampler != nullptr)
+	{
+		m_pTexturePS->Bind();
+		ID3D11ShaderResourceView* srv = m_pCurrentTexture;
+		GetContext()->PSSetShaderResources(0, 1, &srv);
+		GetContext()->PSSetSamplers(0,1,&m_pSampler);
+	}
+	else
+	{
+		m_pPS->Bind();
+
+		ID3D11ShaderResourceView* nullSRV = nullptr;
+		GetContext()->PSSetShaderResources(0, 1, &nullSRV);
+	}
 	m_pBox->Draw();
 }
 void Geometory::DrawCylinder()
@@ -95,6 +116,11 @@ void Geometory::DrawSphere()
 	m_pVS->Bind();
 	m_pPS->Bind();
 	m_pSphere->Draw();
+}
+
+void Geometory::SetTexture(ID3D11ShaderResourceView* texture)
+{
+	m_pCurrentTexture = texture;
 }
 
 void Geometory::MakeVS()
@@ -211,4 +237,55 @@ void Geometory::MakeLine()
 	desc.isWrite = true;
 	m_pLines = new MeshBuffer();
 	m_pLines->Create(desc);
+}
+
+void Geometory::MakeTexturePS()
+{
+	const char* PSCode=R"EOT(
+Texture2D g_Texture : register(t0);
+SamplerState g_Sampler : register(s0);
+
+struct PS_IN
+{
+    float4 pos : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+float4 main(PS_IN pin) : SV_TARGET0
+{
+    return g_Texture.Sample(g_Sampler, pin.uv);
+}
+
+)EOT";
+
+	m_pTexturePS = new PixelShader();
+
+	HRESULT hr = m_pTexturePS->Compile(PSCode);
+
+	if (FAILED(hr))
+	{
+		delete m_pTexturePS;
+		m_pTexturePS = nullptr;
+		return;
+	}
+	D3D11_SAMPLER_DESC desc = {};
+
+	desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+
+	desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+	desc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	hr = GetDevice()->CreateSamplerState(
+		&desc,
+		&m_pSampler
+	);
+
+	if (FAILED(hr))
+	{
+		delete m_pTexturePS;
+		m_pTexturePS = nullptr;
+	}
 }
