@@ -24,6 +24,39 @@ bool CollisionManager::CheckSphereCollision(const DirectX::XMFLOAT3& aPos,float 
     return distanceSq <= radiusSum * radiusSum;
 }
 
+bool CollisionManager::CheckSwapCricle(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, float playerRadius, const DirectX::XMFLOAT3& enemyPos, float enemyRadius, float& hitT)
+{
+    //zx•º–Ú”»’è
+    const float dx = end.x - start.x;
+    const float dz = end.z - start.z;
+
+    const float fx = start.x - enemyPos.x;
+    const float fz = start.z - enemyPos.z;
+
+    const float radius = playerRadius + enemyRadius;
+
+    const float a = dx * dx + dz * dz;
+    const float b = 2.0f * (fx * dx + fz * dz);
+    const float c = fx * fx + fz * fz - radius*radius;
+    if (c <= 0.0f)
+    {
+        hitT = 0.0f;
+        return true;
+    }
+    if (a <= 0.00001f)
+        return false;
+    const float discriminant = b * b - 4.0f * a * c;
+    if (discriminant < 0.0f)
+        return false;
+
+    const float t = (-b - sqrtf(discriminant)) / (2.0f * a);
+    if (t < 0.0f || t>1.0f)
+        return false;
+
+    hitT = t;
+    return true;
+}
+
 void CollisionManager::DrawDebugSphere(const DirectX::XMFLOAT3& pos, float radius)
 {
     const int segments = 32;

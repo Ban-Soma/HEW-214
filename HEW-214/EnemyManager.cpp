@@ -265,7 +265,7 @@ void EnemyManager::UpdateEnemyPopulation()
     }
     
     //フィールド内の敵の数が足りなくなったら補充
-   const int MaxRetry = 30;
+   const int MaxRetry = 30000;
     for (int i = 0; i < MAX_ENEMY; i++)
     {
         if (activeCount >= MAX_ENEMY) break;
@@ -333,8 +333,7 @@ void EnemyManager::DeadEnemy()
             continue;
         }
         if(enemy->GetState()==Enemy::DEAD)continue;
-        Energy* t_energy=g_player->GetEnergy();
-        t_energy->OnEnemyKilled();
+        
         enemy->SetState(Enemy::DEAD);
 	}
 }

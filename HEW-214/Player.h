@@ -75,6 +75,13 @@ public:
 	State GetState();
 
 	Energy* GetEnergy();
+	DirectX::XMFLOAT3 GetDashPreviousPos()const;
+	void FinalizeDashStep();
+	void StopDashAt(const DirectX::XMFLOAT3& pos);
+	bool IsDashing()const;
+
+	void EndDash();
+	
 private:
 	// 状態別の更新処理
 	void UpdateIdle();
@@ -83,5 +90,5 @@ private:
 	void UpdateDamage();
 	void UpdateStun();
 	void UpdateDead();
-	
+	DirectX::XMFLOAT3 m_dashPreviousPos{};
 };

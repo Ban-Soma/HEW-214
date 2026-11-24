@@ -72,10 +72,6 @@ void SceneGame::Update()
 	//プレイヤーを先に動かす
 	m_pPlayer->Update();
 
-	//動いた後のプレイヤーの位置をカメラの注視点に設定
-	m_pCamera->SetLook(m_pPlayer->GetPos());
-	//新しい注視点を使ってカメラの位置を計算
-	m_pCamera->Update();
 
 
 	m_pEnemyManager->UpdateEnemyManager();
@@ -86,6 +82,10 @@ void SceneGame::Update()
 	
 	//m_pCamera->SetLook(m_pPlayer->GetPos());
 
+	//動いた後のプレイヤーの位置をカメラの注視点に設定
+	m_pCamera->SetLook(m_pPlayer->GetPos());
+	//新しい注視点を使ってカメラの位置を計算
+	m_pCamera->Update();
 
 	if (GetAsyncKeyState(VK_F3) & 1)//F3で表示切替
 	{

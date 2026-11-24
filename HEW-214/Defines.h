@@ -43,6 +43,6 @@ static constexpr float ENEMY_COLLISON = 0.5f;
 //ÉGÉlÉãÉMÅ[
 static constexpr float MAX_ENERGY = 100.0f;
 static constexpr float DASH_COST = 50.0f;
-static constexpr float KILL_RECOVERY = 50.0f;
+static constexpr float KILL_RECOVERY = 100.0f;
 static constexpr float OVERHEAT_TIME = 3.0f;
 #endif // __DEFINES_H__

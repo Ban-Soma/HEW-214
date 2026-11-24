@@ -13,6 +13,14 @@ public:
 	static bool CheckSphereCollision(
 		const DirectX::XMFLOAT3& aPos, float aRadius, 
 		const DirectX::XMFLOAT3& bPos, float bRadius);
+	static bool CheckSwapCricle(
+		const DirectX::XMFLOAT3& start,
+		const DirectX::XMFLOAT3& end,
+		float playerRadius,
+		const DirectX::XMFLOAT3& enemyPos,
+		float enemyRadius,
+		float& hitT
+	);
 
 	static void DrawDebugSphere(const DirectX::XMFLOAT3& pos,float radius);
 

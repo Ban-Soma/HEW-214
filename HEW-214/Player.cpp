@@ -22,8 +22,8 @@ Player::Player()
 	// ダッシュ用
 	, m_dashDirX(0.0f)     // 移動方向X
 	, m_dashDirZ(0.0f)      // 移動方向Z
-	, m_dashDistance(3.0f)  // ダッシュ距離
-	, m_dashSpeed(3.0f)    // 1フレームの移動量
+	, m_dashDistance(7.2f)  // ダッシュ距離
+	, m_dashSpeed(36.0f)    // 1フレームの移動量
 	, m_dashRemaining(0.0f) // 残りの移動距離
 	, m_prevRT(false)      // 前フレームRT入力状態
 	, m_nowRT(false)        // RTを押しているか 
@@ -315,31 +315,16 @@ void Player::UpdateMove()
 // ダッシュ
 void Player::UpdateDash()
 {
-	float dt = GameTime::DeltaTime();
-	// ダッシュ中の移動量
-	float move = std::min(m_dashSpeed, m_dashRemaining);
+	const float dt = GameTime::DeltaTime();
+	m_dashPreviousPos = m_pos;
 
-	m_pos.x += m_dashDirX * move*dt;
-	m_pos.z += m_dashDirZ * move*dt;
+	// ダッシュ中の移動量
+	const float move = std::min(m_dashSpeed*dt, m_dashRemaining);
+
+	m_pos.x += m_dashDirX * move;
+	m_pos.z += m_dashDirZ * move;
 
 	m_dashRemaining -= move;
-
-	// ダッシュ終了
-	if (m_dashRemaining <= 0.0f)
-	{
-		m_dashRemaining = 0.0f;
-		m_pEnergy->OnDashEnd();
-		m_trajectory->AddPoint(m_pos);
-		// スティック入力がある場合
-		if (m_showArrow)
-		{
-			SetState(State::MOVE);
-		}
-		else
-		{
-			SetState(State::IDLE);
-		}
-	}
 }
 
 // 被弾
@@ -360,6 +345,52 @@ void Player::UpdateDead()
 Energy* Player::GetEnergy()
 {
 	return m_pEnergy;
+}
+
+DirectX::XMFLOAT3 Player::GetDashPreviousPos() const
+{
+	return m_dashPreviousPos;
+}
+
+void Player::FinalizeDashStep()
+{
+	if (!IsDashing())return;
+	if (m_dashRemaining <= 0.0f)
+	{
+		EndDash();
+	}
+}
+
+void Player::StopDashAt(const DirectX::XMFLOAT3& pos)
+{
+	if (!IsDashing())return;
+	m_pos = pos;
+	EndDash();
+}
+
+void Player::EndDash()
+{
+	if (m_state != State::DASH)
+		return;
+
+	m_dashRemaining = 0.0f;
+
+	m_pEnergy->OnDashEnd();
+	m_trajectory->AddPoint(m_pos);
+
+	if (m_showArrow)
+	{
+		SetState(State::MOVE);
+	}
+	else
+	{
+		SetState(State::IDLE);
+	}
+}
+
+bool Player::IsDashing() const
+{
+	return m_state == State::DASH;
 }
 
 

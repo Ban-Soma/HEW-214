@@ -6,7 +6,7 @@ public:
 	
 	void Update(float deltaTime);
 
-	bool ConsumeDash();
+	void ConsumeDash();
 	void OnDashEnd();
 
 	void OnEnemyKilled(int count = 1);
@@ -18,4 +18,5 @@ public:
 private:
 	float m_energy=100.0f;
 	bool m_isOverheated=false;
+	bool m_DashPending = false;
 };

@@ -17,18 +17,19 @@ void Energy::Update(float deltaTime)
 	}
 }
 
-bool Energy::ConsumeDash()
+void Energy::ConsumeDash()
 {
-	if (m_isOverheated)	return false;
-	if (m_energy < DASH_COST)return false;
-	m_energy -= DASH_COST;
-	return true;
+	
+	m_energy = (std::max)(0.0f,m_energy-DASH_COST);
+	m_DashPending = true;
+	
 }
 
 void Energy::OnDashEnd()
 {
 	if (m_isOverheated) return;
-
+	if (!m_DashPending)return;
+	m_DashPending = false;
 	if (m_energy <= 0.0f)
 	{
 		m_energy = 0.0f;

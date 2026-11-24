@@ -3,24 +3,46 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "EnemyManager.h"
-
+#include "GameTime.h"
 void CombatSystem::Update(Player& player, EnemyManager& enemyManager) {
+	if (!player.IsDashing())return;
+	const auto start = player.GetDashPreviousPos();
+	const auto end = player.GetPos();
+
+	float nearestT = 2.0f;
+	Enemy* hitEnemy = nullptr;
 	Enemy* const* enemies = enemyManager.GetEnemies();
 	
-	for (int i= 0; i < MAX_ENEMY; ++i) {
+	for (int i = 0; i < MAX_ENEMY; ++i) {
 		Enemy* enemy = enemies[i];
-		
-		if (enemy == nullptr||!enemy->IsActive()) continue;
+
+		if (enemy == nullptr || !enemy->IsActive()) continue;
 		if (!enemy->IsAlive())continue;
-		bool hit = CollisionManager::CheckSphereCollision(player.GetPos(), PLAYER_COLLISION, enemy->GetPos(), ENEMY_COLLISON);
-		/*bool hit = CollisionManager::CheckCollision(player.GetPos(), player.GetScale(), enemy->GetPos(), enemy->GetScale());*/
-			
-		if (!hit) continue;
-		enemy->TakeDamage(1);
-		// プレイヤーと敵が衝突した場合の処理
-		// ここにダメージ処理やゲームオーバー処理などを追加
-		// 例: プレイヤーの体力を減らす
-		// player.TakeDamage(enemy->GetDamage());
-		
+		float hitT = 0.0f;
+		if (CollisionManager::CheckSwapCricle(start, end, PLAYER_COLLISION, enemy->GetPos(), ENEMY_COLLISON, hitT))
+		{
+			if (hitT < nearestT)
+			{
+				nearestT = hitT;
+				hitEnemy = enemy;
+			}
+		}
 	}
+	if(hitEnemy!=nullptr)
+	{	
+		DirectX::XMFLOAT3 hitPos = start;
+		hitPos.x += (end.x - start.x) * nearestT;
+		hitPos.z += (end.z - start.z) * nearestT;
+		hitEnemy->TakeDamage(1);
+
+		
+		if (!hitEnemy->IsAlive()||!hitEnemy->IsActive())
+		{
+			player.GetEnergy()->OnEnemyKilled();
+			GameTime::Killslow();
+		}
+		
+		player.StopDashAt(hitPos);
+	}
+	player.FinalizeDashStep();
 }

@@ -108,16 +108,18 @@ void Enemy::UpdateStun()
 }
 void Enemy::UpdateDead()
 {
-	m_DeadTimer++;
-	if (m_DeadTimer* m_DeadTimer + m_DeadTimer * m_DeadTimer)//“ñæ‚¾‚©‚ç0.01ˆÈ‰º‚È‚çXV‚µ‚È‚¢
-	{
-		m_rotation.z = atan2f(m_DeadTimer*60, m_DeadTimer*60);
-	}
-	m_pos.y -= m_DeadTimer*0.001f;
-	if (m_DeadTimer >= 60)
-		SetState(DEADEND);
+	const float dt = GameTime::DeltaTime();
+	m_DeadTimer+=dt;
 	
+	const float rotate = DirectX::XM_2PI * 5.0f;
+	m_rotation.y +=rotate*dt;
+	
+	m_pos.y -= 3.6f * m_DeadTimer * dt;
 
+	if (m_DeadTimer >= 1.0f)
+	{
+		SetState(DEADEND);
+	}
 }
 void Enemy::UpdateDeadEnd()
 {
