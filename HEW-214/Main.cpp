@@ -7,7 +7,7 @@
 #include "SceneGame.h"
 #include "Defines.h"
 #include "ShaderList.h"
-
+#include "GameTime.h"
 // test
 
 //--- グローバル変数
@@ -25,7 +25,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	Sprite::Init();
 	InitInput();
 	ShaderList::Init();
-
+	//時間計測の初期化
+	GameTime::Init();
 	// シーン
 	g_pScene = new SceneGame();
 
@@ -45,6 +46,7 @@ void Uninit()
 
 void Update()
 {
+	GameTime::Update();
 	UpdateInput();
 	g_pScene->RootUpdate();
 }

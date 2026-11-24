@@ -12,6 +12,7 @@ private:
     float m_speed; // 弾の速度
     int m_life; // 弾の生存時間
 
+    bool m_active;
 public:
     // コンストラクタ
     Bullet();
@@ -21,10 +22,17 @@ public:
     // デストラクタ
     ~Bullet();
 
+    void Reset(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 direction);
     // 更新処理
     void Update();
     // 描画処理
     void Draw();
-
+    void SetActive(bool active);
+    bool IsActive()const;
     bool IsAlive() const;
+    DirectX::XMFLOAT3 GetPos()const
+    {
+        return m_pos;
+    }
+
 };

@@ -10,6 +10,7 @@
 #include <cmath>
 #include<algorithm>
 #include "PlayerTrajectory.h"
+#include "GameTime.h"
 
 #pragma comment(lib, "Xinput.lib")
 
@@ -22,7 +23,7 @@ Player::Player()
 	, m_dashDirX(0.0f)     // 移動方向X
 	, m_dashDirZ(0.0f)      // 移動方向Z
 	, m_dashDistance(3.0f)  // ダッシュ距離
-	, m_dashSpeed(0.3f)    // 1フレームの移動量
+	, m_dashSpeed(3.0f)    // 1フレームの移動量
 	, m_dashRemaining(0.0f) // 残りの移動距離
 	, m_prevRT(false)      // 前フレームRT入力状態
 	, m_nowRT(false)        // RTを押しているか 
@@ -47,19 +48,19 @@ Player::~Player()
 
 void Player::Update()
 {
-	const float MoveSpeed = 0.05f;
+	const float MoveSpeed = 5.0f;
 
 	//仮の経過時間(60FPS想定)
 	//後で実際のdeltaTimeni置き換える
-	const float deltaTime = 1.0f / 60.0f;
-	m_pEnergy->Update(deltaTime);
+	const float dt = GameTime::DeltaTime();
+	m_pEnergy->Update(dt);
 
-
+	float dMoveSpeed = MoveSpeed * dt;
 	// キーボード移動（現状どおりワールド座標基準）
-	if (IsKeyPress('W')) { m_pos.z += MoveSpeed; }
-	if (IsKeyPress('S')) { m_pos.z -= MoveSpeed; }
-	if (IsKeyPress('A')) { m_pos.x -= MoveSpeed; }
-	if (IsKeyPress('D')) { m_pos.x += MoveSpeed; }
+	if (IsKeyPress('W')) { m_pos.z += dMoveSpeed; }
+	if (IsKeyPress('S')) { m_pos.z -= dMoveSpeed; }
+	if (IsKeyPress('A')) { m_pos.x -= dMoveSpeed; }
+	if (IsKeyPress('D')) { m_pos.x += dMoveSpeed; }
 
 	// Xboxコントローラー
 	// コントローラーの入力情報を格納する構造体
@@ -177,6 +178,7 @@ void Player::Draw()
 			SetDepthTest(DEPTH_ENABLE);
 		}
 	}
+	CollisionManager::DrawDebugSphere(m_pos, PLAYER_COLLISION);
 	// 軌跡の描画
 	m_trajectory->Draw();
 	//矢印の描画
@@ -313,11 +315,12 @@ void Player::UpdateMove()
 // ダッシュ
 void Player::UpdateDash()
 {
+	float dt = GameTime::DeltaTime();
 	// ダッシュ中の移動量
 	float move = std::min(m_dashSpeed, m_dashRemaining);
 
-	m_pos.x += m_dashDirX * move;
-	m_pos.z += m_dashDirZ * move;
+	m_pos.x += m_dashDirX * move*dt;
+	m_pos.z += m_dashDirZ * move*dt;
 
 	m_dashRemaining -= move;
 

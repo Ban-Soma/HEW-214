@@ -2,6 +2,7 @@
 #include "Enemy.h"
 #include "Camera.h"
 #include "Defines.h"
+#include "BulletPool.h"
 #include <vector>
 
 using namespace std;
@@ -22,7 +23,9 @@ class EnemyManager{
 private:
 	Enemy* m_pEnemy[MAX_ENEMY];
 	Camera* m_pCamera;
-
+	//enemyManagerに球のオブジェクトプールを持たせ
+	//Enemyがそのポインタから球を発射する設計に変更
+	BulletPool m_BulletPool;
 	//スポーン位置の保持
 	vector< EnemySpawnPoint> m_spawnPoint;
 

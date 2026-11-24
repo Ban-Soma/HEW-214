@@ -5,6 +5,8 @@
 #include "Energy.h"
 #include <sstream>
 #include <iomanip>
+#include "GameTime.h"
+#include "Profiler.h"
 
 extern Player* g_InfoPlayer = new Player;
 extern EnemyManager* g_InfoEnemyManager = new EnemyManager;
@@ -47,8 +49,9 @@ void DebugInfo::Update()
     if (!m_text || !m_visible)
         return;
 
-    UpdateFPS();
-    values.fps = m_fps;
+    //UpdateFPS();
+    values.fps = GameTime::FPS();
+    
     //ここからの範囲内に変更する値を入力する
     
     
@@ -60,6 +63,8 @@ void DebugInfo::Update()
 
     values.energy = g_InfoEnergy->GetEnergy();
 
+    
+
 
     //ここまでの範囲内に変更する値を入力する
     std::ostringstream ss;
@@ -68,7 +73,12 @@ void DebugInfo::Update()
     ss << "[ DEBUG INFO ]\n";
 
     ss << "FPS         : " << values.fps << "\n";
-
+    ss << "UpdateMs:" << values.UpdateMs << "\n";
+    ss << "DrawMs:" << values.DrawMs << "\n";
+    ss << "FrameMs:" << values.FrameMs << "\n";
+    ss << "MaxFrameMs:" << values.maxFrameMs << "\n";
+    ss << "MaxUpdateMs:" << values.maxUpdateMs << "\n";
+    ss << "MaxDrawMs:" << values.maxDrawMs << "\n";
     ss << "Position    : "
         << values.playerX << ", "
         << values.playerY << ", "
@@ -81,7 +91,19 @@ void DebugInfo::Update()
     ss << "Dash Speed  : " << values.dashSpeed << "\n";
     ss << "Enemy Count : " << values.enemyCount << "\n";
     ss << "Wave        : " << values.wave << "\n";
+    ss << "\n=== PERFORMANCE ===\n";
+    ss << std::fixed << std::setprecision(2);
 
+    const auto& stats = Profiler::GetStats();
+
+    for (const auto& stat : stats)
+    {
+        ss << stat.name
+            << " : " << stat.averageMs << " ms"
+            << " / MAX " << stat.maxMs << " ms"
+            << " / Calls " << stat.callsPerFrame
+            << "\n";
+    }
     m_text->SetText(ss.str());
 }
 

@@ -10,14 +10,15 @@ void CombatSystem::Update(Player& player, EnemyManager& enemyManager) {
 	for (int i= 0; i < MAX_ENEMY; ++i) {
 		Enemy* enemy = enemies[i];
 		
-		if (enemy == nullptr) continue;
+		if (enemy == nullptr||!enemy->IsActive()) continue;
 		if (!enemy->IsAlive())continue;
-		bool hit = CollisionManager::CheckCollision(player.GetPos(), player.GetScale(), enemy->GetPos(), enemy->GetScale());
+		bool hit = CollisionManager::CheckSphereCollision(player.GetPos(), PLAYER_COLLISION, enemy->GetPos(), ENEMY_COLLISON);
+		/*bool hit = CollisionManager::CheckCollision(player.GetPos(), player.GetScale(), enemy->GetPos(), enemy->GetScale());*/
 			
 		if (!hit) continue;
 		enemy->TakeDamage(1);
 		// プレイヤーと敵が衝突した場合の処理
-		// ここにダメージ処理やゲームオーバー処理などを追加することができます。
+		// ここにダメージ処理やゲームオーバー処理などを追加
 		// 例: プレイヤーの体力を減らす
 		// player.TakeDamage(enemy->GetDamage());
 		

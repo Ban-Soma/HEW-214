@@ -12,6 +12,7 @@
 #include "Defines.h"
 #include "DebugInfo.h"
 #include "Energy.h"
+#include "BulletPool.h"
 
 class SceneGame : public Scene
 {
@@ -30,6 +31,7 @@ private:
 	Player* m_pPlayer;
 	EnemyManager* m_pEnemyManager;
 	CombatSystem* m_combatSystem;
+	BulletPool m_BulletPool;
 
 	DebugInfo m_debugInfo; // デバッグ情報表示用
 	DebugValues m_debugValues; // デバッグ情報の値

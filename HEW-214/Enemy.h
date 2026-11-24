@@ -9,7 +9,7 @@
 
 //クラスの前方宣言　不要なヘッダのインクルードを減らせる。
 class Player;
-
+class BulletPool;
 
 
 class Enemy : public GameObject  {
@@ -30,11 +30,13 @@ private:
 	Enemy** m_pEnemy;
 	Camera* m_pCamera;
 	Model* m_pModel;
+	BulletPool* m_pBulletPool;
+	bool m_Active;
 
-	int m_shotTimer;       // 発射までの経過フレーム
-	int m_shotInterval;    // 発射間隔
+	float  m_shotTimer;       // 発射までの経過フレーム
+	float m_shotInterval;    // 発射間隔
 
-	std::vector<Bullet> m_bullets;
+	
 
 	protected:
 	float m_moveSpeed; //的の移動スピード
@@ -42,6 +44,8 @@ private:
 	int m_EnemyLife; //敵のHP
 
 	float m_DeadTimer;
+
+
 public:
 	//コンストラクタ
 	Enemy();
@@ -59,22 +63,23 @@ public:
 	
 	// 弾丸
 	void Shoot();
-
+	void SetBulletPool(BulletPool* pool);
 	//敵の体力消費処理
 	//virtual void HitDamage(Player* player,int m_EnemyLife) = 0;
 
 	//追従するプレイヤーの座標を取得
 	void SetPlayerPos(Player* pPlayer);
-	
 	void TakeDamage(int damage);
-	
 	bool IsAlive() const;
+
 
 	//カメラの処理
 	void SetEnemyCamera(Camera* camera);
 	bool LoadEnemyFbx(const char* file);
 	
-
+	void SetActive(bool active);
+	bool IsActive()const;
+	void Reset();
 	// 状態の設定
 	void SetState(State state);
 	// 状態の取得

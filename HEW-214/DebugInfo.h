@@ -15,6 +15,12 @@ class Energy;
 struct DebugValues
 {
     float fps = 0.0f;
+    float UpdateMs = 0.0f;
+    float DrawMs = 0.0f;
+    float FrameMs = 0.0f;
+    float maxFrameMs=0.0f;
+    float maxUpdateMs = 0.0f;
+    float maxDrawMs = 0.0f;
 
     float playerX = 0.0f;
     float playerY = 0.0f;
@@ -60,5 +66,6 @@ private:
     int m_frameCount = 0;
     float m_fps = 0.0f;
     float m_elapsedTime = 0.0f;
+    
     
 };

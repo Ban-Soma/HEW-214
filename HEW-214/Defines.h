@@ -31,10 +31,14 @@ static const int	DEBUG_GRID_NUM		= 10;			// グリッド中心から端までの線の本数
 static const float	DEBUG_GRID_MARGIN	= METER(1.0f);	// グリッド配置幅
 
 #define SAFE_DELETE(p) {if(p){delete (p);(p) = nullptr;}}//メモリの開放
+
+//プレイヤー
+static constexpr float PLAYER_COLLISION = 0.3f;
 //敵
 #define MAX_ENEMY (20) //最大敵数
 static constexpr float MAX_DISTANCE = 5.0f;
 static constexpr float MIN_DISTANCE = 0.5f;
+static constexpr float ENEMY_COLLISON = 0.5f;
 
 //エネルギー
 static constexpr float MAX_ENERGY = 100.0f;

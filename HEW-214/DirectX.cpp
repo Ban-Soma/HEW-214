@@ -43,8 +43,8 @@ HRESULT InitDirectX(HWND hWnd, UINT width, UINT height, bool fullscreen)
 	sd.BufferDesc.Height = height;						// バックバッファの高さ
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;	// バックバッファフォーマット(R,G,B,A)
 	sd.SampleDesc.Count = 1;							// マルチサンプルの数
-	sd.BufferDesc.RefreshRate.Numerator = 1000;
-	sd.BufferDesc.RefreshRate.Denominator = 1;
+	sd.BufferDesc.RefreshRate.Numerator = 0;
+	sd.BufferDesc.RefreshRate.Denominator = 0;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	// バックバッファの使用方法
 	sd.BufferCount = 1;									// バックバッファの数
 	sd.OutputWindow = hWnd;								// 関連付けるウインドウ

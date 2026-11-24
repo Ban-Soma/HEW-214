@@ -3,9 +3,12 @@
 #include "Main.h"
 #include <stdio.h>
 #include <crtdbg.h>
-
+#include <chrono>
+#include <thread>
+#include "GameTime.h"
+#include "Profiler.h"
 // timeGetTime周りの使用
-#pragma comment(lib, "winmm.lib")
+//#pragma comment(lib, "winmm.lib")
 
 //--- プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -41,14 +44,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	// ウィンドウの作成
-	RECT rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	DWORD style = WS_CAPTION | WS_SYSMENU;
 	DWORD exStyle = WS_EX_OVERLAPPEDWINDOW;
 	AdjustWindowRectEx(&rect, style, false, exStyle);
 	hWnd = CreateWindowEx(
 		exStyle, wcex.lpszClassName,
 		APP_TITLE, style,
-		CW_USEDEFAULT,CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT,
 		rect.right - rect.left, rect.bottom - rect.top,
 		HWND_DESKTOP,
 		NULL, hInstance, NULL
@@ -67,10 +70,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	//--- FPS制御
-	timeBeginPeriod(1);
-	DWORD countStartTime = timeGetTime();
-	DWORD preExecTime = countStartTime;
+	using Clock = std::chrono::steady_clock;
+	//目標FPS
+	const double targetFPS = static_cast<double>(fFPS);
+	//1フレーmu
+	const auto frameDuration = std::chrono::duration_cast<Clock::duration>(std::chrono::duration<double>(1.0 / targetFPS));
+	//次のフレームの予定時刻
+	auto nextFrameTime = Clock::now();
 
+	
 	//--- ウィンドウの管理
 	while (1)
 	{
@@ -80,28 +88,43 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				break;
 			}
-			else
-			{
 				TranslateMessage(&message);
 				DispatchMessage(&message);
-			}
+			
 		}
 		else
 		{
-			DWORD nowTime = timeGetTime();
-			float diff = static_cast<float>(nowTime - preExecTime);
-			if (diff >= 1000.0f / fFPS)
+			auto now = Clock::now();
+			if (now < nextFrameTime)
 			{
-				Update();
-				Draw();
-				preExecTime = nowTime;
+				if (nextFrameTime - now > std::chrono::milliseconds(2))
+				{
+					std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				}
+				else
+				{
+					std::this_thread::yield();
+				}
+				continue;
+				
 			}
+			Profiler::BeginFrame();
+			Update();
+			Draw();
+
+			Profiler::EndFrame();
+
+			//大きく書くついた場合
+			nextFrameTime += frameDuration;
+			now = Clock::now();
+			if (frameDuration<now-nextFrameTime)
+			{
+				nextFrameTime = now;
+			}
+
 		}
 	}
 
-
-	// 終了時
-	timeEndPeriod(1);
 	Uninit();
 	UnregisterClass(wcex.lpszClassName, hInstance);
 

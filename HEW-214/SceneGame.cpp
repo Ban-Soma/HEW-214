@@ -7,7 +7,8 @@
 #include "time.h"
 #include "DirectXMath.h"
 #include "CollisionManager.h"
-
+#include "GameTime.h"
+#include "Profiler.h"
 
 SceneGame::SceneGame()
 	:m_pGround(nullptr)
@@ -63,22 +64,28 @@ SceneGame::~SceneGame()
 }
 
 void SceneGame::Update()
-{
+{	
+	PROFILE_SCOPE("SceGame.Update");
 	m_pGoal->Update();
 	m_pGround->Update();
+
 	//プレイヤーを先に動かす
 	m_pPlayer->Update();
-	
+
 	//動いた後のプレイヤーの位置をカメラの注視点に設定
 	m_pCamera->SetLook(m_pPlayer->GetPos());
 	//新しい注視点を使ってカメラの位置を計算
 	m_pCamera->Update();
-	
+
+
 	m_pEnemyManager->UpdateEnemyManager();
 	//当たり判定,コンボなどの更新
 	m_combatSystem->Update(*m_pPlayer, *m_pEnemyManager);
+
 	m_pEnemyManager->DeadEnemy();
-	m_pCamera->SetLook(m_pPlayer->GetPos());
+	
+	//m_pCamera->SetLook(m_pPlayer->GetPos());
+
 
 	if (GetAsyncKeyState(VK_F3) & 1)//F3で表示切替
 	{

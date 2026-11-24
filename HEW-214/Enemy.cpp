@@ -5,7 +5,8 @@
 #include "Defines.h"
 #include <DirectXMath.h>
 #include<cmath>
-
+#include "BulletPool.h"
+#include "GameTime.h"
 /// <summary>
 /// XMVECTORSET() 　x,y,z,wの値をセット
 /// XMVector3Length() 3次元ベクトルの長さを計算
@@ -18,26 +19,31 @@
 /// 
 /// 
 
-Player* g_pPlayer = new Player();
+Player* g_pPlayer = nullptr;
 
 Enemy::Enemy()
-	: m_moveSpeed(0.02f)
+	: m_moveSpeed(2.0f)
 	, m_EnemyCount(0)
 	, m_EnemyLife(1)
 	, m_pEnemy(nullptr)
 	, m_pModel(nullptr)
 	, m_pCamera(nullptr)
+	, m_pBulletPool(nullptr)
 	, m_shotTimer(0)
-	, m_shotInterval(120)
+	, m_shotInterval(1.0)
 	, m_State(IDLE)
 	, m_DeadTimer(0.0f)
 {
-
+	SetPlayerPos(g_pPlayer);
 }
 
 Enemy::~Enemy()
 {
 	SAFE_DELETE(m_pModel);
+}
+void Enemy::SetBulletPool(BulletPool* pool)
+{
+	m_pBulletPool = pool;
 }
 
 void Enemy::Update()
@@ -52,11 +58,6 @@ void Enemy::Update()
 	case State::DEAD: UpdateDead(); break;
 	case State::DEADEND:UpdateDeadEnd();break;
 	}
-	for (Bullet& bullet : m_bullets)
-	{
-		if (!bullet.IsAlive())continue;
-			bullet.Update();
-	}	
 }
 void Enemy::UpdateIdle()
 {
@@ -170,10 +171,6 @@ void Enemy::Draw()
 		//深度テストの有効化
 		SetDepthTest(DEPTH_ENABLE);
 	}
-	for (Bullet& bullet : m_bullets)
-	{
-		bullet.Draw();
-	}
 }
 
 void Enemy::SetPlayerPos(Player* pPlayer)
@@ -221,14 +218,15 @@ void Enemy::FollowingEnemy()
 	//移動前の位置を候補位置にコピー
 	DirectX::XMFLOAT3 nextPos = m_pos;
 
+	float dt = GameTime::DeltaTime();
 	//距離が一定以下ならプレイヤーに近づく
 	if (g_distance <= MAX_DISTANCE && g_distance > MIN_DISTANCE)
 	{
 		//正規化して移動量を計算
 		g_direction = DirectX::XMVector3Normalize(g_direction);
 		//敵をプレイヤーに向かって移動,//追従方向と速度から候補位置の計算
-		nextPos.x += DirectX::XMVectorGetX(g_direction) * m_moveSpeed;
-		nextPos.z += DirectX::XMVectorGetZ(g_direction) * m_moveSpeed;
+		nextPos.x += DirectX::XMVectorGetX(g_direction) * m_moveSpeed*dt;
+		nextPos.z += DirectX::XMVectorGetZ(g_direction) * m_moveSpeed*dt;
 	}
 	else if (g_distance >= MAX_DISTANCE)
 	{
@@ -311,7 +309,7 @@ void Enemy::Shoot()
 
 
 	// 発射間隔をカウント
-	m_shotTimer++;
+	m_shotTimer+=GameTime::DeltaTime();
 
 	// 発射間隔になったら弾を発射
 	if (m_shotTimer >= m_shotInterval)
@@ -324,10 +322,14 @@ void Enemy::Shoot()
 		DirectX::XMFLOAT3 bulletDirection;
 		DirectX::XMStoreFloat3(&bulletDirection, direction);
 
-		// 弾を生成
-		m_bullets.emplace_back(m_pos, bulletDirection);
+		//弾を生成
+		if (m_pBulletPool != nullptr)
+		{
+			m_pBulletPool->Fire(m_pos, bulletDirection);
+		}
 	}
 }
+
 void Enemy::TakeDamage(int damage)
 {
 		if (m_EnemyLife <= 0) return; // すでに死んでいる場合は処理しない
@@ -354,6 +356,32 @@ bool Enemy::LoadEnemyFbx(const char* file)
 	if (m_pModel == nullptr) m_pModel = new Model();
 	return m_pModel->Load(file, 0.5f);
 }
+void Enemy::SetActive(bool active)
+{
+	m_Active = active;
+}
+bool Enemy::IsActive() const
+{
+	return m_Active;
+}
+
+void Enemy::Reset()
+{
+    
+    m_moveSpeed = 2.0f;
+    m_EnemyLife = 1;
+	m_rotation = { 0,0,0 };
+    m_shotTimer = 0;
+    m_shotInterval = 1.0f;
+
+    m_State = IDLE;
+    m_DeadTimer = 0.0f;
+
+
+    m_Active = true;
+}
+
+
 // 状態の設定
 void Enemy::SetState(State state)
 {
