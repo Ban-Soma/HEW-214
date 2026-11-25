@@ -22,7 +22,7 @@ Player::Player()
 	// ダッシュ用
 	, m_dashDirX(0.0f)     // 移動方向X
 	, m_dashDirZ(0.0f)      // 移動方向Z
-	, m_dashDistance(7.2f)  // ダッシュ距離
+	, m_dashDistance(3.6f)  // ダッシュ距離
 	, m_dashSpeed(36.0f)    // 1フレームの移動量
 	, m_dashRemaining(0.0f) // 残りの移動距離
 	, m_prevRT(false)      // 前フレームRT入力状態

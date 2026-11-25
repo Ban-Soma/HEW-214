@@ -80,7 +80,7 @@ float GameTime::GetTimeScale()
 }
 void GameTime::Killslow()
 {
-	m_HitStopRemaining = 0.04f;
+	m_HitStopRemaining = 0.06f;
 	m_SlowRemaining = 0.10f;
 }
 float GameTime::FPS()

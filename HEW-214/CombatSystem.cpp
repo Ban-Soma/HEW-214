@@ -18,6 +18,7 @@ void CombatSystem::Update(Player& player, EnemyManager& enemyManager) {
 
 		if (enemy == nullptr || !enemy->IsActive()) continue;
 		if (!enemy->IsAlive())continue;
+
 		float hitT = 0.0f;
 		if (CollisionManager::CheckSwapCricle(start, end, PLAYER_COLLISION, enemy->GetPos(), ENEMY_COLLISON, hitT))
 		{
@@ -28,6 +29,7 @@ void CombatSystem::Update(Player& player, EnemyManager& enemyManager) {
 			}
 		}
 	}
+	
 	if(hitEnemy!=nullptr)
 	{	
 		DirectX::XMFLOAT3 hitPos = start;
@@ -41,8 +43,8 @@ void CombatSystem::Update(Player& player, EnemyManager& enemyManager) {
 			player.GetEnergy()->OnEnemyKilled();
 			GameTime::Killslow();
 		}
-		
-		player.StopDashAt(hitPos);
+		//‚±‚±‚ÌƒIƒ“ƒIƒt‚ÅŠÑ’Ê‚ğØ‚è‘Ö‚¦‚ê‚Ü‚·
+		//player.StopDashAt(hitPos);
 	}
 	player.FinalizeDashStep();
 }
