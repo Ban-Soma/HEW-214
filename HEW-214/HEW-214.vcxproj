@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BllomEffect.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="BulletPool.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -188,6 +189,9 @@
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderList.cpp" />
+    <ClCompile Include="ShockWave.cpp" />
+    <ClCompile Include="ShockWaveManager.cpp" />
+    <ClCompile Include="ShockwaveRenderer.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -195,6 +199,7 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BloomEffect.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="BulletPool.h" />
     <ClInclude Include="Camera.h" />
@@ -246,6 +251,9 @@
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderList.h" />
+    <ClInclude Include="ShockWave.h" />
+    <ClInclude Include="ShockWaveManager.h" />
+    <ClInclude Include="ShockwaveRenderer.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="CollisionManager.h" />

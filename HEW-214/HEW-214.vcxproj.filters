@@ -61,6 +61,18 @@
     <Filter Include="ヘッダー ファイル\Font">
       <UniqueIdentifier>{4c343b23-eed4-49d6-a500-40a81010a03f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Shockwave">
+      <UniqueIdentifier>{d7d03566-e244-4644-9c60-5cddcba5457d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Shockwave">
+      <UniqueIdentifier>{ab99023e-c9a6-49df-820b-bb37b4af63cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bloom">
+      <UniqueIdentifier>{f26df82d-3884-456d-a129-fc5f1dcaff24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Bloom">
+      <UniqueIdentifier>{55141dee-8075-4ca4-ba1a-e29081c5e74a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sprite.cpp">
@@ -212,6 +224,18 @@
     </ClCompile>
     <ClCompile Include="BulletPool.cpp">
       <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="ShockWave.cpp">
+      <Filter>ソース ファイル\Shockwave</Filter>
+    </ClCompile>
+    <ClCompile Include="ShockWaveManager.cpp">
+      <Filter>ソース ファイル\Shockwave</Filter>
+    </ClCompile>
+    <ClCompile Include="ShockwaveRenderer.cpp">
+      <Filter>ソース ファイル\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="BllomEffect.cpp">
+      <Filter>ソース ファイル\Bloom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -376,6 +400,18 @@
     </ClInclude>
     <ClInclude Include="BulletPool.h">
       <Filter>ヘッダー ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="ShockWaveManager.h">
+      <Filter>ヘッダー ファイル\Shockwave</Filter>
+    </ClInclude>
+    <ClInclude Include="ShockWave.h">
+      <Filter>ヘッダー ファイル\Shockwave</Filter>
+    </ClInclude>
+    <ClInclude Include="ShockwaveRenderer.h">
+      <Filter>ヘッダー ファイル\Shockwave</Filter>
+    </ClInclude>
+    <ClInclude Include="BloomEffect.h">
+      <Filter>ヘッダー ファイル\Bloom</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

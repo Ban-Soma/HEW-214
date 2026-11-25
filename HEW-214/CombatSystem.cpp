@@ -4,8 +4,18 @@
 #include "Enemy.h"
 #include "EnemyManager.h"
 #include "GameTime.h"
+CombatSystem::CombatSystem()
+{
+	m_ShockwaveManager.Init();
+}
+CombatSystem::~CombatSystem()
+{
+	m_ShockwaveManager.Uninit();
+}
 void CombatSystem::Update(Player& player, EnemyManager& enemyManager) {
+	m_ShockwaveManager.Update();
 	if (!player.IsDashing())return;
+
 	const auto start = player.GetDashPreviousPos();
 	const auto end = player.GetPos();
 
@@ -41,10 +51,15 @@ void CombatSystem::Update(Player& player, EnemyManager& enemyManager) {
 		if (!hitEnemy->IsAlive()||!hitEnemy->IsActive())
 		{
 			player.GetEnergy()->OnEnemyKilled();
+			m_ShockwaveManager.Spawn(hitEnemy->GetPos());
 			GameTime::Killslow();
 		}
 		//‚±‚±‚ÌƒIƒ“ƒIƒt‚ÅŠÑ’Ê‚ðØ‚è‘Ö‚¦‚ê‚Ü‚·
 		//player.StopDashAt(hitPos);
 	}
 	player.FinalizeDashStep();
+}
+void CombatSystem::Draw(Camera* camera)
+{
+	m_ShockwaveManager.Draw(camera->GetViewMatrix(),camera->GetProjectionMatrix());
 }

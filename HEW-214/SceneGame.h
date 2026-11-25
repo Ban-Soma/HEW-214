@@ -13,6 +13,7 @@
 #include "DebugInfo.h"
 #include "Energy.h"
 #include "BulletPool.h"
+#include "BloomEffect.h"
 
 class SceneGame : public Scene
 {
@@ -32,6 +33,7 @@ private:
 	EnemyManager* m_pEnemyManager;
 	CombatSystem* m_combatSystem;
 	BulletPool m_BulletPool;
+	BloomEffect m_bloom;
 
 	DebugInfo m_debugInfo; // デバッグ情報表示用
 	DebugValues m_debugValues; // デバッグ情報の値

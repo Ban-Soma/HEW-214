@@ -10,6 +10,7 @@
 #include "GameTime.h"
 #include "Profiler.h"
 
+
 SceneGame::SceneGame()
 	:m_pGround(nullptr)
 	, m_pGoal(nullptr)
@@ -21,7 +22,10 @@ SceneGame::SceneGame()
 {
 	// 乱数の初期化
 	srand((unsigned int)time(NULL));
-
+	if (!m_bloom.Initialize(GetDefaultRTV()->GetWidth(), GetDefaultRTV()->GetHeight()))
+	{
+		DebugBreak();
+	}
 	m_pGround = new Ground();
 	m_pGround->SetPos(0.0f, 0.0f, 0.0f);
 	m_pGround->SetScale(3.0f, 0.2f, 3.0f);
@@ -41,6 +45,9 @@ SceneGame::SceneGame()
 	m_pEnemyManager = new EnemyManager();
 	m_pEnemyManager->SetEnemyCamera(m_pCamera);
 	m_pEnemyManager->InitEnemyManager(m_pPlayer);
+
+	m_combatSystem = new CombatSystem;
+	
 	ID3D11Device* device = GetDevice();
 	ID3D11DeviceContext* context = GetContext();
 
@@ -77,7 +84,7 @@ void SceneGame::Update()
 	m_pEnemyManager->UpdateEnemyManager();
 	//当たり判定,コンボなどの更新
 	m_combatSystem->Update(*m_pPlayer, *m_pEnemyManager);
-
+	
 	m_pEnemyManager->DeadEnemy();
 	
 	//m_pCamera->SetLook(m_pPlayer->GetPos());
@@ -106,12 +113,17 @@ void SceneGame::Draw()
 
 	Geometory::SetView(m_pCamera->GetViewMatrix());
 	Geometory::SetProjection(m_pCamera->GetProjectionMatrix());
+	m_bloom.BeginScene(GetDefaultDSV()->GetView());
 
 	m_pGround->Draw();
 	m_pGoal->Draw();
 	m_pPlayer->Draw();	
+	m_combatSystem->Draw(m_pCamera);
 	m_pEnemyManager->DrawEnemyManager();
+	m_bloom.EndScene(GetDefaultRTV()->GetView());
 	//デバッグ用数値の描画
 	m_debugInfo.Draw();
+
+	
 	
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include "ShockWave.h"
 
 class Bullet
 {
@@ -30,9 +31,4 @@ public:
     void SetActive(bool active);
     bool IsActive()const;
     bool IsAlive() const;
-    DirectX::XMFLOAT3 GetPos()const
-    {
-        return m_pos;
-    }
-
 };
